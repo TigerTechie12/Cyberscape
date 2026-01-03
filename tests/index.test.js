@@ -7,7 +7,8 @@ const username="testuser"+ Math.random()
 const password="testpassword"
 const response=await axios.post(`${BACKEND_URL}/api/v1/user/signup`,{
     username:username,  
-    password:password
+    password:password,
+    type:'admin'
 })
 expect(response.statusCode).toBe(200)
 })
