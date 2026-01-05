@@ -472,4 +472,41 @@ expect(mapResponse.statusCode).toBe(403)
 expect(avatarResponse.statusCode).toBe(403)
 expect(updateResponse.statusCode).toBe(403)
 })
+test("Admin is able to hit the admin Endpoint",async()=>{
+const res=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"
+	,"width": 1,
+	"height": 1,
+  "static": true 
+
+},{headers:{"authorization":`Bearer ${admintoken}`}})
+
+const mapResponse=await axios.post(`${BACKEND_URL}/api/v1/admin/map`,{
+    "thumbnail": "https://thumbnail.com/a.png",
+   "dimensions": "100x200",
+   "name": "100 person interview room",
+   "defaultElements": [{}]
+},{headers:{"authorization":`Bearer ${admintoken}`}})
+
+const avatarResponse=await axios.post(`${BACKEND_URL}/api/v1/admin/avatar`,{
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3RFDZM21teuCMFYx_AROjt-AzUwDBROFww&s",
+	"name": "Timmy"
+},{"authorization":`Bearer ${admintoken}`
+
+})
+const updateResponse=await axios.put(`${BACKEND_URL}/api/v1/admin/element/:elementId`,{
+    
+	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"	
+
+},{
+    "authorization":`Bearer ${admintoken}`
+})
+
+
+expect(res.statusCode).toBe(200)
+expect(mapResponse.statusCode).toBe(200)
+expect(avatarResponse.statusCode).toBe(200)
+expect(updateResponse.statusCode).toBe(200)
+})
+
 })
