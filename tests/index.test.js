@@ -383,9 +383,22 @@ test("Adding Element works as expected",async()=>{
         "spaceId":spaceId,
         'x':50,
         'y':34
+    },{
+          headers:{"authorization":`Bearer ${userToken}` }
     })
 const response=await axios.get(`${BACKEND_URL}/api/v1/space/${spaceId}`)
 expect(response.data.elements.length).toBe(3)
+})
+test("Adding Element fails if the eleemnt lies outside the dimensions",async()=>{
+    const res=await axios.post(`${BACKEND_URL}/api/v1/space/element`,{
+        "elementId":element1Id,
+        "spaceId":spaceId,
+        'x':500000,
+        'y':340000
+    },{
+         headers:{"authorization":`Bearer ${userToken}` }
+    })
+expect(res.statusCode).toBe(404)
 })
 
 })
