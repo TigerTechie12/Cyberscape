@@ -235,15 +235,45 @@ expect(response.statusCode).toBe(400)
 test("User is not able to delete a space that doesn't exist",async()=>{
     const response=await axios.delete(`${BACKEND_URL}/api/v1/space/randomIdDoesntExist`,{
         "name":"test"
-    })
+    },{headers:{"authorization":`Bearer ${userToken}`}})
     expect(response.statusCode).toBe(400)
 })
 
 test("User is able to delete a space ",async()=>{
     const response=await axios.delete(`${BACKEND_URL}/api/v1/space/${response.data.spaceId}`,{
         "name":"test"
-    })
+    },{headers:{"authorization":`Bearer ${userToken}`}})
     expect(response.statusCode).toBe(200)
+})
+test("User shouldnt be able to create spaces that are created by other users",async()=>{
+    const response=await axios.delete(`${BACKEND_URL}/api/v1/space/${response.data.spaceId}`,{
+      headers:{"authorization":`Bearer ${token}`}  
+    })
+expect(response.statusCode).toBe(403)
+})
+test("Admin has no spaces initially",async()=>{
+    const res=await axios.get(`${BACKEND_URL}/api/v1/space/`,{
+        "name":"test",
+        "dimensions":"100x100"
+    }
+)
+expect(res.data.spaces.length).toBe(0)
+})
+test("User has no spaces initially",async()=>{
+const res=await axios.post(`${BACKEND_URL}/api/v1/space/all`,{
+        "name":"test",
+        "dimensions":"100x100"
+    },{
+        headers:{"authorization":`Bearer ${userToken}`}
+    })
+    const response=await axios.get(`${BACKEND_URL}/api/v1/space/all`,{
+        headers:{"authorization":`Bearer ${userToken}`}
+    })
+const filteredSpaces=response.data.spaces.find(x=>x.id===res.data.spaceId)
+
+    expect(res.data.spaces.length).toBe(1)
+    expect(filteredSpaces).toBeDefined()
+
 })
 
 })
