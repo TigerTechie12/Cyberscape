@@ -142,4 +142,108 @@ test("Available avatars lists the recently created avatar",async()=>{
  expect(currentAvatars).toBeDefined()
 })
 })
+describe("Space Information",()=>{
+    let mapId=""
+    let token=""
+    let adminId=""
+    let userId=""
+    let userToken=""
+beforeAll(async()=>{
+const username=`test+${Math.random()}`
+const password='testpassword'
+const signupResponse=await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    username:username,
+    password:password,
+    type:'admin'
+})
+adminId=signupResponse.data.userId
+const response=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username:username,
+    password:password
+})
+token=response.data.token
+const element1=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+    	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+	"width": 1,
+	"height": 1,
+  "static": true
+},{headers:{"authorization":`Bearer ${token}`}})
 
+
+const element2=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+    	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+	"width": 1,
+	"height": 1,
+  "static": true
+},{headers:{"authorization":`Bearer ${token}`}})
+element1Id=element1.id
+element2Id=element2.id
+const map=await axios.post(`${BACKEND_URL}/api/v1/admin/map`,{
+      "thumbnail": "https://thumbnail.com/a.png",
+   "dimensions": "100x200",
+   "name": "100 person interview room",
+   "defaultElements": [{
+		   elementId: element1Id,
+		   x: 20,
+		   y: 20
+	   }, {
+	     elementId: element2Id,
+		   x: 18,
+		   y: 20
+	   }
+   ]
+},{headers:{"authorization":`Bearer ${token}`}})
+mapId=map.data.id
+const signupResponseUser=await axios.post(`${BACKEND_URL}/api/v1/user/signup`,{
+    username:`user+${Math.random()}`,
+    password:'testpassword',
+    type:'user'
+})
+userId=signupResponseUser.data.userId
+const signInResponse=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username:`user+${Math.random()}`,
+password:"testpassword"
+})
+userToken=signInResponse.data.token
+
+})    
+test('User is able to create space',async()=>{
+    const response=await axios.post(`${BACKEND_URL}/api/v1/space`,{
+        "name":"Test",
+        "dimensions":"100x100",
+        "mapId":mapId
+    },{headers:{"authorization":`Bearer ${userToken}`}})
+    expect(response.spaceId).toBeDefined()
+    expect(response.statusCode).toBe(200)
+})
+test("user is able to create space without mapId",async()=>{
+    const response=await axios.post(`${BACKEND_URL}/api/v1/space`,{
+        "name":"test",
+        "dimensions":"100x100"
+    },{headers:{"authorization":`Bearer ${userToken}`}})
+expect(response.spaceId).toBeDefined()
+expect(response.statusCode).toBe(200)
+})
+
+test("User fails to create space without mapId && dimensions",async()=>{
+    const response=await axios.post(`${BACKEND_URL}/api/v1/space`,{
+        "name":"test",
+
+    },{headers:{"authorization":`Bearer ${userToken}`}})
+})
+expect(response.statusCode).toBe(400)
+test("User is not able to delete a space that doesn't exist",async()=>{
+    const response=await axios.delete(`${BACKEND_URL}/api/v1/space/randomIdDoesntExist`,{
+        "name":"test"
+    })
+    expect(response.statusCode).toBe(400)
+})
+
+test("User is able to delete a space ",async()=>{
+    const response=await axios.delete(`${BACKEND_URL}/api/v1/space/${response.data.spaceId}`,{
+        "name":"test"
+    })
+    expect(response.statusCode).toBe(200)
+})
+
+})
