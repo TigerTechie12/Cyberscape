@@ -402,3 +402,74 @@ expect(res.statusCode).toBe(404)
 })
 
 })
+describe("Create an element",async()=>{
+let admintoken=''
+let userToken=""
+let userId=''
+let adminId=''
+
+beforeAll(async()=>{
+const username=`test+${Math.random()}`
+const password="testpassword"
+const userUsername=`test+${Math.random()}`
+const userPassword='test'
+const signupResponseAdmin=await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    username,
+    password,
+    type:'admin'
+})
+adminId=signupResponseAdmin.data.userId
+const signInResponseAdmin=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username,
+    password
+})
+admintoken=signInResponseAdmin.data.token
+const signupResponseUser=await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    username:userUsername,
+    password:userPassword,
+    type:'user'
+})
+userId=signupResponseUser.data.userId
+const signInResponseUser=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username:userUsername,
+    password:userPassword
+})
+userToken=signInResponseUser.data.token
+})
+test("User is not able to hit the admin Endpoint",async()=>{
+const res=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"
+	,"width": 1,
+	"height": 1,
+  "static": true 
+
+},{headers:{"authorization":`Bearer ${userToken}`}})
+
+const mapResponse=await axios.post(`${BACKEND_URL}/api/v1/admin/map`,{
+    "thumbnail": "https://thumbnail.com/a.png",
+   "dimensions": "100x200",
+   "name": "100 person interview room",
+   "defaultElements": [{}]
+},{headers:{"authorization":`Bearer ${userToken}`}})
+
+const avatarResponse=await axios.post(`${BACKEND_URL}/api/v1/admin/avatar`,{
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3RFDZM21teuCMFYx_AROjt-AzUwDBROFww&s",
+	"name": "Timmy"
+},{"authorization":`Bearer ${userToken}`
+
+})
+const updateResponse=await axios.put(`${BACKEND_URL}/api/v1/admin/element/:elementId`,{
+    
+	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"	
+
+},{
+    "authorization":`Bearer ${userToken}`
+})
+
+
+expect(res.statusCode).toBe(403)
+expect(mapResponse.statusCode).toBe(403)
+expect(avatarResponse.statusCode).toBe(403)
+expect(updateResponse.statusCode).toBe(403)
+})
+})
