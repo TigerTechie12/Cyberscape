@@ -1,6 +1,6 @@
 import axios from 'axios';
 const BACKEND_URL=""
-
+const WS_URL=""
 describe('Authentication',()=>{
 test('Admin is able to sign up only once',async()=>{
 const username="testuser"+ Math.random()
@@ -178,8 +178,8 @@ const element2=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
 	"height": 1,
   "static": true
 },{headers:{"authorization":`Bearer ${token}`}})
-element1Id=element1.id
-element2Id=element2.id
+element1Id=element1.data.id
+element2Id=element2.data.id
 const map=await axios.post(`${BACKEND_URL}/api/v1/admin/map`,{
       "thumbnail": "https://thumbnail.com/a.png",
    "dimensions": "100x200",
@@ -523,4 +523,139 @@ test('Admin is able to update the imageUrl for an element',async()=>{
     })
     expect(updateRes.statusCode).toBe(200)
 })
+})
+describe("Websocket tests",async()=>{
+    let admintoken=''
+let userToken=""
+let userId=''
+let adminId=''
+let element1Id=''
+let element2Id=''
+let mapId=''
+let spaceId=''
+let ws1messages=[]
+let ws2messages=[]
+let userX=''
+let userY=''
+let adminX=''
+let adminY=''
+async function setupHTTP(){ const username=`test+${Math.random()}`
+const password="testpassword"
+const userUsername=`test+${Math.random()}`
+const userPassword='test'
+const signupResponseAdmin=await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    username,
+    password,
+    type:'admin'
+})
+adminId=signupResponseAdmin.data.userId
+const signInResponseAdmin=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username,
+    password
+})
+admintoken=signInResponseAdmin.data.token
+const signupResponseUser=await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    username:userUsername,
+    password:userPassword,
+    type:'user'
+})
+userId=signupResponseUser.data.userId
+const signInResponseUser=await axios.post(`${BACKEND_URL}/api/v1/signin`,{
+    username:userUsername,
+    password:userPassword
+})
+userToken=signInResponseUser.data.token
+const element1=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+    	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+	"width": 1,
+	"height": 1,
+  "static": true
+},{headers:{"authorization":`Bearer ${token}`}})
+
+
+const element2=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+    	"imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+	"width": 1,
+	"height": 1,
+  "static": true
+},{headers:{"authorization":`Bearer ${token}`}})
+element1Id=element1.data.id
+element2Id=element2.data.id
+const map=await axios.post(`${BACKEND_URL}/api/v1/admin/map`,{
+      "thumbnail": "https://thumbnail.com/a.png",
+   "dimensions": "100x200",
+   "name": "100 person interview room",
+   "defaultElements": [{
+		   elementId: element1Id,
+		   x: 20,
+		   y: 20
+	   }, {
+	     elementId: element2Id,
+		   x: 18,
+		   y: 20
+	   }
+   ]
+},{headers:{"authorization":`Bearer ${token}`}})
+mapId=map.data.id  }
+async function waitForAndPopLatestMessage(messageArray){
+    return new Promise(r=>{
+        if(messageArray.length>0){
+            resolve(messageArray.shift())
+            
+        }else{
+            let interval=setInterval(()=>{
+                if(messageArray.length>0){
+                    resolve(messageArray.shift())
+                    clearInterval(interval)
+                }
+            },1000)
+        }
+    })
+}
+async function setupWs(){
+    ws1=new WebSocket(WS_URL)
+    ws2=new WebSocket(WS_URL)
+    await new Promise(r=>{ws1.onopen=r})
+    await new Promise(r=>{ws2.onopen=r})
+ws1.onmessage=(event)=>{
+    ws1messages.push(JSON.parse(event.data))
+}
+ws2.onmessage=(event)=>{
+    ws2messages.push(JSON.parse(event.data))
+}
+}
+    beforeAll(async()=>{
+       setupHTTP()
+       setupWs()
+       
+})
+test("Get back ack for joining the space",async()=>{
+    
+ws1.send(JSON.stringify({
+        "type": "join",
+    "payload": {
+	    "spaceId": "123",
+	    "token": admintoken
+    }
+})
+
+)
+ws2.send(JSON.stringify({
+        "type": "join",
+    "payload": {
+	    "spaceId": "123",
+	    "token": userToken
+    }
+}))
+const message1=await waitForAndPopLatestMessage(ws1messages)
+const message2=await waitForAndPopLatestMessage(ws2messages)
+expect(message1.type).toBe("space-joined")
+expect(message2.type).toBe("space-joined")
+expect(message1.payload.users.length+message2.payload.users.length).toBe(1)
+adminX=message1.payload.spawn.x
+adminY=message1.payload.spawn.y
+userX=message2.payload.spawn.x
+userY=message2.payload.spawn.y
+})
+
 })
