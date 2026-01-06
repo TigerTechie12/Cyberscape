@@ -508,5 +508,19 @@ expect(mapResponse.statusCode).toBe(200)
 expect(avatarResponse.statusCode).toBe(200)
 expect(updateResponse.statusCode).toBe(200)
 })
+test('Admin is able to update the imageUrl for an element',async()=>{
+    const elementRes=await axios.post(`${BACKEND_URL}/api/v1/admin/element`,{
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"
+	,"width": 1,
+	"height": 1,
+  "static": true
+    },{"authorization":`Bearer ${admintoken}`})
 
+    const updateRes=await axios.put(`${BACKEND_URL}/api/v1/admin/element/${elementRes.data.id}`,{
+        "imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE"	
+    },{
+        "authorization":`Bearer ${admintoken}`
+    })
+    expect(updateRes.statusCode).toBe(200)
+})
 })
