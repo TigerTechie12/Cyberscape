@@ -40,5 +40,14 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+
+    // Path Mappings
+    "baseUrl": ".",
+    "paths": {
+      "common": ["../../packages/common/src/index.ts"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/common" }
+  ]
 }
