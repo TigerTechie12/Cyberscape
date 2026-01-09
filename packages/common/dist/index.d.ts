@@ -4,4 +4,7 @@ export declare const InputModel: z.ZodObject<{
     password: z.ZodString;
     type: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
+export declare const userMetaData: z.ZodObject<{
+    avatarId: z.ZodString;
+}, z.core.$strip>;
 //# sourceMappingURL=index.d.ts.map
