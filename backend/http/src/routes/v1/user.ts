@@ -17,5 +17,7 @@ res.status(200).json({})
 })
 
 router.get('/metadata/bulk?ids=[]',(req,res)=>{
-    
+    //get info from db and return
+res.status(200).json({})
 })
+
