@@ -22,3 +22,21 @@ export const mapCreator=z.object({
     height:z.number(),
     static:z.boolean()
 })
+export const updateImage=z.object({
+    imageUrl:z.string()
+})
+
+export const avatarInputs=z.object({
+    imageUrl:z.string(),
+    name:z.string()
+})
+export const adminMap=z.object({
+    thumbnail:z.string(),
+    dimensions:z.string(),
+    name:z.string(),
+defaultElements:z.array(z.object({
+    elementId:z.string(),
+    x:z.number(),
+    y:z.number()
+}))
+})

@@ -24,4 +24,21 @@ export declare const mapCreator: z.ZodObject<{
     height: z.ZodNumber;
     static: z.ZodBoolean;
 }, z.core.$strip>;
+export declare const updateImage: z.ZodObject<{
+    imageUrl: z.ZodString;
+}, z.core.$strip>;
+export declare const avatarInputs: z.ZodObject<{
+    imageUrl: z.ZodString;
+    name: z.ZodString;
+}, z.core.$strip>;
+export declare const adminMap: z.ZodObject<{
+    thumbnail: z.ZodString;
+    dimensions: z.ZodString;
+    name: z.ZodString;
+    defaultElements: z.ZodArray<z.ZodObject<{
+        elementId: z.ZodString;
+        x: z.ZodNumber;
+        y: z.ZodNumber;
+    }, z.core.$strip>>;
+}, z.core.$strip>;
 //# sourceMappingURL=index.d.ts.map
