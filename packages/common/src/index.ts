@@ -6,3 +6,19 @@ export const InputModel=z.object({
     type:z.string().optional()
 })
 export const userMetaData=z.object({avatarId:z.string()})
+export const spaceData=z.object({name:z.string(),
+    dimensions:z.string(),
+    mapId:z.string()
+})
+export const spaceElements=z.object({
+    elementId:z.string(),
+    spaceId:z.string(),
+    x:z.number(),
+    y:z.number()
+})
+export const mapCreator=z.object({
+    imageUrl:z.string(),
+    width:z.number(),
+    height:z.number(),
+    static:z.boolean()
+})
