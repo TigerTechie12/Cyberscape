@@ -13,7 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 model User{
-  id String @id @default(cuid())
+  id String @id @unique @default(cuid())
   username String @unique
   password String @unique
   type userType
@@ -54,7 +54,6 @@ model Element{
   height Int
   width Int
   
-
 }
 model Maps{
   id String @id @unique @default(cuid())
