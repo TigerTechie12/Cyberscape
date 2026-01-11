@@ -12,3 +12,59 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+model User{
+  id String @id @default(cuid())
+  username String @unique
+  password String @unique
+  type userType
+  avatarId String?
+
+}
+model Avatar{
+id String @id @unique @default(cuid())
+name String? @unique
+imageUrl String? @unique
+}
+model mapElements{
+  id String @id @unique @default(cuid()) 
+mapId String
+elementId String?
+x Int?
+y Int?
+}
+model Space{
+id String @id @unique @default(cuid())
+name String
+width Int
+thumbnail String?
+height Int?
+}
+model spaceElements{
+  id String @id @unique @default(cuid())
+elementId String
+spaceId String
+x Int
+y Int
+}
+
+model Element{
+  id String @id @unique @default(cuid())
+  imageUrl String
+  static Boolean
+  height Int
+  width Int
+  
+
+}
+model Maps{
+  id String @id @unique @default(cuid())
+  width Int
+  height Int
+  name String
+
+}
+
+enum userType{
+  User
+  Admin
+}
