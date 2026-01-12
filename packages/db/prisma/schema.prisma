@@ -1,10 +1,11 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+
 generator client {
+ 
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
@@ -17,20 +18,24 @@ model User{
   username String @unique
   password String @unique
   type userType
-  avatarId String?
-
+  avatarId String
+  space Space[]
+  avatar Avatar @relation(fields:[avatarId],references:[id])
 }
 model Avatar{
 id String @id @unique @default(cuid())
-name String? @unique
-imageUrl String? @unique
+name String? 
+imageUrl String? 
+user User[]
 }
 model mapElements{
   id String @id @unique @default(cuid()) 
 mapId String
-elementId String?
+elementId String
 x Int?
 y Int?
+map Maps @relation(fields:[mapId],references: [id])
+element Element @relation(fields:[elementId],references: [id])
 }
 model Space{
 id String @id @unique @default(cuid())
@@ -38,6 +43,9 @@ name String
 width Int
 thumbnail String?
 height Int?
+creatorId String
+admin User @relation(fields:[creatorId],references:[id])
+spaceElements spaceElements[]
 }
 model spaceElements{
   id String @id @unique @default(cuid())
@@ -45,6 +53,8 @@ elementId String
 spaceId String
 x Int
 y Int
+space Space @relation(fields:[spaceId],references: [id])
+element Element @relation(fields:[elementId],references:[id])
 }
 
 model Element{
@@ -53,16 +63,16 @@ model Element{
   static Boolean
   height Int
   width Int
-  
+  spaceElements spaceElements[]
+  mapElements mapElements[]
 }
 model Maps{
   id String @id @unique @default(cuid())
   width Int
   height Int
   name String
-
+ mapElements mapElements[]
 }
-
 enum userType{
   User
   Admin
