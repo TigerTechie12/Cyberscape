@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { mapCreator,updateImage,avatarInputs,adminMap } from "common";
+import {client} from '@repo/db/client'
 const router=Router()
 
 router.post('/admin/element',(req,res)=>{
@@ -8,7 +9,7 @@ if(!mapCreator.safeParse(body).success){
     res.json({message:"Wrong Inputs"})
   
 }
-//db logic
+
 res.json({id})
 })
 router.put('/admin/element/:elementId',(req,res)=>{

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"tsc -b",
-    "start":"node dist/index.js"
+    "build": "tsc -b",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@repo/db": "file:../../packages/db",
     "@types/express": "^5.0.6",
+    "common": "file:../../packages/common",
     "express": "^5.2.1"
   }
 }
