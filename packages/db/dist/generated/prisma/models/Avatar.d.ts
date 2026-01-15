@@ -194,9 +194,9 @@ export type AvatarUncheckedUpdateManyInput = {
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
-export type AvatarScalarRelationFilter = {
-    is?: Prisma.AvatarWhereInput;
-    isNot?: Prisma.AvatarWhereInput;
+export type AvatarNullableScalarRelationFilter = {
+    is?: Prisma.AvatarWhereInput | null;
+    isNot?: Prisma.AvatarWhereInput | null;
 };
 export type AvatarCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
@@ -218,15 +218,14 @@ export type AvatarCreateNestedOneWithoutUserInput = {
     connectOrCreate?: Prisma.AvatarCreateOrConnectWithoutUserInput;
     connect?: Prisma.AvatarWhereUniqueInput;
 };
-export type AvatarUpdateOneRequiredWithoutUserNestedInput = {
+export type AvatarUpdateOneWithoutUserNestedInput = {
     create?: Prisma.XOR<Prisma.AvatarCreateWithoutUserInput, Prisma.AvatarUncheckedCreateWithoutUserInput>;
     connectOrCreate?: Prisma.AvatarCreateOrConnectWithoutUserInput;
     upsert?: Prisma.AvatarUpsertWithoutUserInput;
+    disconnect?: Prisma.AvatarWhereInput | boolean;
+    delete?: Prisma.AvatarWhereInput | boolean;
     connect?: Prisma.AvatarWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.AvatarUpdateToOneWithWhereWithoutUserInput, Prisma.AvatarUpdateWithoutUserInput>, Prisma.AvatarUncheckedUpdateWithoutUserInput>;
-};
-export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null;
 };
 export type AvatarCreateWithoutUserInput = {
     id?: string;

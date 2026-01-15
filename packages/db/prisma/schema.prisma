@@ -46,6 +46,8 @@ height Int?
 creatorId String
 admin User @relation(fields:[creatorId],references:[id])
 spaceElements spaceElements[]
+mapId String
+maps Maps @relation(fields:[mapId],references:[id])
 }
 model spaceElements{
   id String @id @unique @default(cuid())
@@ -72,6 +74,7 @@ model Maps{
   height Int
   name String
  mapElements mapElements[]
+ space Space[]
 }
 enum userType{
   User
