@@ -18,9 +18,9 @@ model User{
   username String @unique
   password String @unique
   type userType
-  avatarId String
+  avatarId String?
   space Space[]
-  avatar Avatar @relation(fields:[avatarId],references:[id])
+  avatar Avatar? @relation(fields:[avatarId],references:[id])
 }
 model Avatar{
 id String @id @unique @default(cuid())
