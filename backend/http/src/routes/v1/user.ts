@@ -8,7 +8,7 @@ router.post('/metadata',async(req,res)=>{
     const body=req.body
     const parsedData:any=userMetaData.safeParse(body)
     if(!parsedData.success){
-        res.status(400).json({message:"Wrong Inputs"})
+      return  res.status(400).json({message:"Wrong Inputs"})
     }
    
   
@@ -20,11 +20,11 @@ router.post('/metadata',async(req,res)=>{
             data:{
                 avatarId:parsedData.data.avatarId
             }})
-        res.status(200).json({Message:"Udpated metadata"})
+     return   res.status(200).json({Message:"Udpated metadata"})
     }
 
 catch(e){
-    res.status(403).json({message:"Something went wrong"})
+   return res.status(403).json({message:"Something went wrong"})
 }
 })
 router.get('/avatars',async(req,res)=>{
@@ -46,7 +46,7 @@ select:{id:true,
     imageUrl:true
 }
     })
-    res.status(200).json({avatars})}
+   return res.status(200).json({avatars})}
 catch(e){res.status(403).json({message:"Something went wrong"})}
 
 })
@@ -54,7 +54,7 @@ catch(e){res.status(403).json({message:"Something went wrong"})}
 router.get('/metadata/bulk?ids=[]',(req,res)=>{
     //get info from db and return
     
-    
-res.status(200).json({})
+
+return res.status(200).json({})
 })
 

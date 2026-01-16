@@ -9,7 +9,7 @@ router.post('/space',async(req,res)=>{
 const body=req.body
 const parsedSpaceData:any=spaceData.safeParse(body)
 if(!parsedSpaceData.success){
-    res.status(400).json({message:"Invalid Inputs"})
+ return   res.status(400).json({message:"Invalid Inputs"})
 }
 try{
     const dbDataCreation=await client.space.create({data:{
@@ -20,9 +20,9 @@ try{
     }
     })
     const spaceId=dbDataCreation.id
-     res.status(200).json({spaceId})}
+   return  res.status(200).json({spaceId})}
    
-catch(e){res.status(403).json({message:"Something went wrong"})}
+catch(e){return res.status(403).json({message:"Something went wrong"})}
 
 
 })
@@ -33,9 +33,9 @@ router.delete('/space/:spaceId',async(req,res)=>{
           const dbDataDelete=await client.space.delete({
             where:{id:id}
           })
-        res.status(400).json({message:'space deleted'})}
+    return    res.status(400).json({message:'space deleted'})}
     catch(e){
-        res.status(403).json({message:"Something went wrong"})}
+    return    res.status(403).json({message:"Something went wrong"})}
   
 })
 router.get('/space/all',async(req,res)=>{
@@ -54,9 +54,9 @@ width:true,
 thumbnail:true
 }
         })
-        res.status(200).json({dbData})}
+      return  res.status(200).json({dbData})}
     catch(e){
-  res.status(403).json({message:"Something went wrong"})
+ return res.status(403).json({message:"Something went wrong"})
     }
 })
 router.get('/space/:spaceId',async(req,res)=>{
@@ -67,9 +67,9 @@ elementId:true,
 x:true,
 y:true
 }})
-res.status(200).json({dbData})}
+return res.status(200).json({dbData})}
 catch(e){
-    res.status(403).json({message:"Something went wrong"})
+   return res.status(403).json({message:"Something went wrong"})
 }
 })
 router.post('/space/element',async(req,res)=>{
@@ -87,10 +87,10 @@ if(!parsedResult.success){
             y:parsedResult.data.y
            } 
         })
-        res.status(200).json({message:"element created"})
+   return     res.status(200).json({message:"element created"})
     }
     catch(e){
-           res.status(403).json({message:"Something went wrong"})
+         return  res.status(403).json({message:"Something went wrong"})
     }
 
 
@@ -100,15 +100,27 @@ router.delete('/space/element/:id',async(req,res)=>{
     const id:any=req.params.id
 try{
 const deleteData=await client.spaceElements.deleteMany({where:{spaceId:id}})
-    res.status(200).json({message:"element deleted"})
+   return res.status(200).json({message:"element deleted"})
 }
 
 catch(e){
-    res.status(403).json({message:"Something went wrong"})
+ return   res.status(403).json({message:"Something went wrong"})
 }
 })
 
-router.get('/elements',(req,res)=>{
-    
-    res.json({elements}).status(200)
+router.get('/elements',async(req,res)=>{
+    try{
+const authHeader=req.headers.authorization
+    const token:any=authHeader?.split("")[1] 
+        const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
+        const id:any=decoded.userId 
+const elements=await client.element.findMany({
+    where:{creatorId:id}
+})
+     return    res.json({elements}).status(200)
+    }
+   
+    catch(e){
+ return      res.status(403).json({message:"Something went wrong"})   
+    }
 })
