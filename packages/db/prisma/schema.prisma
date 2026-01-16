@@ -21,6 +21,7 @@ model User{
   avatarId String?
   space Space[]
   avatar Avatar? @relation(fields:[avatarId],references:[id])
+  element Element[]
 }
 model Avatar{
 id String @id @unique @default(cuid())
@@ -65,6 +66,8 @@ model Element{
   static Boolean
   height Int
   width Int
+  creatorId String?
+  user User? @relation(fields:[creatorId],references:[id])
   spaceElements spaceElements[]
   mapElements mapElements[]
 }
