@@ -28,37 +28,69 @@ catch(e){
 
 })
 router.put('/admin/element/:elementId',async(req,res)=>{
-    const id=req.params
+    const id:any=req.params
     const body=req.body
     const parsedData=updateImage.safeParse(body)
 if(!parsedData.success){
        return res.json({message:"Wrong Inputs"})
 }
 try{
-    const dbData=
+    const dbData=await client.element.update({
+        where:{id:id},
+        data:{
+            imageUrl:parsedData.data.imageUrl
+        }
+    })
     
-    res.status(200).json({message:"Inputs updated"})
+   return res.status(200).json({message:"Inputs updated"})
 
 }
-catch(e){}
-
-})
-router.post('/admin/avatar',(req,res)=>{
-const body=req.body
-if(!avatarInputs.safeParse(body).success){
-    res.json({message:"Wrong Inputs"})
+catch(e){
+    
+    return res.status(403).json({
+        message:"Something went wrong"
+    })
 }
-//db logic
-res.status(200).json({avatarId})
 
 })
-router.post('/admin/map',(req,res)=>{
+router.post('/admin/avatar',async(req,res)=>{
 const body=req.body
-if(!adminMap.safeParse(body).success){
-    res.json({message:"Wrong Inputs"})
+const parsedResult=avatarInputs.safeParse(body)
+if(!parsedResult.success){
+  return  res.json({message:"Wrong Inputs"})
 }
-//db logic
-res.status(200).json({mapId})
+try{ const dbData=await client.avatar.create({data:{  imageUrl:parsedResult.data?.imageUrl,
+    name:parsedResult.data?.name}
+  
+})
+const avatarId=dbData.id
+    
+    return res.status(200).json({avatarId})}
+catch(e){
+
+    return res.status(403).json({
+        message:"Something went wrong"
+    })
+}
+
+
+})
+router.post('/admin/map',async(req,res)=>{
+const body=req.body
+const parsedResult=adminMap.safeParse(body)
+if(!parsedResult.success){
+  return  res.json({message:"Wrong Inputs"})
+}
+try{
+
+  return  res.status(200).json({mapId})
+}
+catch(e){
+    return res.status(403).json({
+        message:"Something went wrong"
+    })
+}
+
 
 })
 
