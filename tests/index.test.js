@@ -1,6 +1,37 @@
 import axios from 'axios';
 const BACKEND_URL=""
 const WS_URL=""
+const axios2=require("axios")
+const axios={
+    post:async(...args)=>{
+        try{
+           
+            const res=await axios2.post(...args)
+            return res
+        }
+        catch(e){
+            return error.response
+        }
+    },
+    get:async(...args)=>{
+        try{const res=await axios2.post(...args)
+            return res
+        }
+        catch(e){return error.response}
+    },
+    put:async(...args)=>{
+        try{const res=await axios2.post(...args)
+            return res
+        }
+        catch(e){return error.response}
+    },
+    delete:async(...args)=>{
+        try{const res=await axios2.post(...args)
+            return res
+        }
+        catch(e){return error.response}
+    }
+}
 describe('Authentication',()=>{
 test('Admin is able to sign up only once',async()=>{
 const username="testuser"+ Math.random()
