@@ -83,7 +83,7 @@ if(!parsedResult.success){
 }
 try{
 
-  return  res.status(200).json({mapId})
+  return  res.status(200).json({})
 }
 catch(e){
     return res.status(403).json({
