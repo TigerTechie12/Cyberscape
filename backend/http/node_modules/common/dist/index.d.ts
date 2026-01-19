@@ -1,6 +1,6 @@
 import * as z from 'zod';
 export declare const InputModel: z.ZodObject<{
-    username: z.ZodString;
+    username: z.ZodEmail;
     password: z.ZodString;
     type: z.ZodEnum<{
         Admin: "Admin";

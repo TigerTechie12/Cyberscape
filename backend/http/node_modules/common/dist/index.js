@@ -1,6 +1,6 @@
 import * as z from 'zod';
 export const InputModel = z.object({
-    username: z.string(),
+    username: z.email(),
     password: z.string().min(8),
     type: z.enum(["Admin", "User"])
 });
@@ -31,7 +31,7 @@ export const avatarInputs = z.object({
 });
 export const adminMap = z.object({
     thumbnail: z.string(),
-    dimensions: z.string(),
+    dimensions: z.string().regex(/^[0-9]{1,5}x[0-9]{1,5}$/),
     name: z.string(),
     defaultElements: z.array(z.object({
         elementId: z.string(),

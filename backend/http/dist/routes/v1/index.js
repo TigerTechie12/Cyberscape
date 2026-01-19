@@ -2,6 +2,7 @@ import { Router } from "express";
 import { InputModel } from "common";
 import { client } from "@repo/db/client";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 router.post('/signup', async (req, res) => {
@@ -10,9 +11,10 @@ router.post('/signup', async (req, res) => {
     if (!parsedData.success) {
         return res.status(400);
     }
+    const hashedPassword = await bcrypt.hash(parsedData.data.password, 10);
     try {
         const userData = await client.user.create({ data: { username: parsedData.data.username,
-                password: parsedData.data.password,
+                password: hashedPassword,
                 type: parsedData.data.type
             }
         });
@@ -31,9 +33,13 @@ router.post('/signin', async (req, res) => {
     }
     try {
         const dbFindUser = await client.user.findUnique({ where: { username: parsedData.data.username,
-                password: parsedData.data.password
             } });
-        if (dbFindUser) {
+        if (!dbFindUser) {
+            return res.status(403).json({ Message: "User not found" });
+        }
+        const password = await client.user.findUnique({ where: { username: parsedData.data.username } });
+        const isValid = await bcrypt.compare(parsedData.data.password, password);
+        if (isValid) {
             const token = jwt.sign({ username: parsedData.data.username,
                 type: parsedData.data.type
             }, JWT_SECRET, {
