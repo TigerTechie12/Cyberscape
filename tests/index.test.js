@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BACKEND_URL=""
+const BACKEND_URL="http://localhost:3000"
 const WS_URL=""
 const axios2=require("axios")
 const axios={
