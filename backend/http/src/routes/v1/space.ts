@@ -3,8 +3,10 @@ import {spaceData} from "common"
 import {client} from '@repo/db/client'
 import { spaceElements } from "common";
 const router=Router()
+import { userMiddleware } from "src/middleware/user.js";
 import jwt,{type JwtPayload}  from "jsonwebtoken";
 const JWT_SECRET:any=process.env.JWT_SECRET
+router.use(userMiddleware)
 router.post('/space',async(req,res)=>{
 const body=req.body
 const parsedSpaceData:any=spaceData.safeParse(body)
@@ -14,9 +16,8 @@ if(!parsedSpaceData.success){
 try{
     const dbDataCreation=await client.space.create({data:{
         name:parsedSpaceData.data.name,
-        mapId:parsedSpaceData.data.mapId,
-        height:parsedSpaceData.data.height,
-        width:parsedSpaceData.data.width
+    thumbnail:parsedSpaceData.data.thumbnail,
+    creatorId:req.userId,
     }
     })
     const spaceId=dbDataCreation.id
@@ -28,9 +29,12 @@ catch(e){return res.status(403).json({message:"Something went wrong"})}
 })
 
 router.delete('/space/:spaceId',async(req,res)=>{
-    
-    try{ const id:any=req.params
-          const dbDataDelete=await client.space.delete({
+    const id:any=req.params.spaceId
+    try{ 
+const existence=await client.space.findUnique({where:{id:id},select:{creatorId:true}})
+if(!existence){return res.status(403).json({message:"Space doesnot exist"})}
+if(existence.creatorId!==req.userId){  res.status(403).json({message: "Unauthorized"})}
+        const dbDataDelete=await client.space.delete({
             where:{id:id}
           })
     return    res.status(400).json({message:'space deleted'})}
@@ -61,13 +65,32 @@ thumbnail:true
 })
 router.get('/space/:spaceId',async(req,res)=>{
 
-const id:any=req.params
-try{const dbData=await client.spaceElements.findMany({where:{spaceId:id}, select:{
-elementId:true,
-x:true,
-y:true
+const id:any=req.params.spaceId
+try{const dbData=await client.space.findUnique({where:{id:id}, 
+    include:{
+spaceElements:{
+    include:{
+        element:true
+    }
+}
 }})
-return res.status(200).json({dbData})}
+if(!dbData){ return res.status(403).json({message:"Data not found"})}
+
+return res.status(200).json({
+    "dimensions":`${dbData.height}x${dbData.width}`,
+spaceElements:dbData.spaceElements.map(e=>({
+id:e.id,
+element:{
+    id:e.element?.id,
+    imageUrl:e.element?.imageUrl,
+    width:e.element?.width,
+    height:e.element?.height,
+    static:e.element?.static
+},
+x:e.x,
+y:e.y
+}))
+})}
 catch(e){
    return res.status(403).json({message:"Something went wrong"})
 }
@@ -77,6 +100,21 @@ router.post('/space/element',async(req,res)=>{
     const parsedResult=spaceElements.safeParse(body)
 if(!parsedResult.success){
    return res.status(400).json({message:"invalid inputs"})
+    }
+    const space=await client.space.findUnique({
+        where:{id:parsedResult.data.spaceId,
+            creatorId:req.userId!
+        },
+        select:{
+            width:true,
+            height:true
+        }
+    })
+    if(!space){
+        return res.status(400).json({message:"Space not found"})
+    }
+    if(parsedResult.data.x<0 || parsedResult.data.y<0 || parsedResult.data.x>space.width! || parsedResult.data.y>space.height!){
+        return  
     }
     try{
         const dbData=await client.spaceElements.create({
