@@ -14,15 +14,55 @@ if(!parsedSpaceData.success){
  return   res.status(400).json({message:"Invalid Inputs"})
 }
 try{
+    if(!parsedSpaceData.data.mapId){
     const dbDataCreation=await client.space.create({data:{
         name:parsedSpaceData.data.name,
     thumbnail:parsedSpaceData.data.thumbnail,
-    creatorId:req.userId,
+    creatorId:req.userId!,
+    width:parseInt(parsedSpaceData.data.dimensions.split("x")[0]),
+    height:parseInt(parsedSpaceData.data.dimensions.split("x")[1])
     }
     })
     const spaceId=dbDataCreation.id
    return  res.status(200).json({spaceId})}
+
+   const map=await client.maps.findFirst({
+    where:{id:parsedSpaceData.data.mapId},select:{
+        mapElements:true,
+        width:true,
+        height:true
+    }
+   })
+       if (!map) {
+        res.status(400).json({message: "Map not found"})
+        return
+    }
+    let space=await client.$transaction(async()=>{
+        const space=await client.space.create({
+            data:{
+                name:parsedSpaceData.data.name,
+                width:map.width,
+                height:map.height,
+                creatorId:req.userId!
+            }
+        })
+        await client.spaceElements.createMany({
+            data:map.mapElements.map(e=>({
+                spaceId:space.id,
+                elementId:e.elementId,
+                x:e.x!,
+                y:e.y!
+            }))
+        })
+    return space
+
+    })
+    console.log("space created")
+res.json({spaceId:space.id})
+}
    
+
+
 catch(e){return res.status(403).json({message:"Something went wrong"})}
 
 
