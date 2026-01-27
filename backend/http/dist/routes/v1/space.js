@@ -3,8 +3,10 @@ import { spaceData } from "common";
 import { client } from '@repo/db/client';
 import { spaceElements } from "common";
 const router = Router();
+import { userMiddleware } from "src/middleware/user.js";
 import jwt, {} from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
+router.use(userMiddleware);
 router.post('/space', async (req, res) => {
     const body = req.body;
     const parsedSpaceData = spaceData.safeParse(body);
@@ -12,23 +14,65 @@ router.post('/space', async (req, res) => {
         return res.status(400).json({ message: "Invalid Inputs" });
     }
     try {
-        const dbDataCreation = await client.space.create({ data: {
-                name: parsedSpaceData.data.name,
-                mapId: parsedSpaceData.data.mapId,
-                height: parsedSpaceData.data.height,
-                width: parsedSpaceData.data.width
+        if (!parsedSpaceData.data.mapId) {
+            const dbDataCreation = await client.space.create({ data: {
+                    name: parsedSpaceData.data.name,
+                    thumbnail: parsedSpaceData.data.thumbnail,
+                    creatorId: req.userId,
+                    width: parseInt(parsedSpaceData.data.dimensions.split("x")[0]),
+                    height: parseInt(parsedSpaceData.data.dimensions.split("x")[1])
+                }
+            });
+            const spaceId = dbDataCreation.id;
+            return res.status(200).json({ spaceId });
+        }
+        const map = await client.maps.findFirst({
+            where: { id: parsedSpaceData.data.mapId }, select: {
+                mapElements: true,
+                width: true,
+                height: true
             }
         });
-        const spaceId = dbDataCreation.id;
-        return res.status(200).json({ spaceId });
+        if (!map) {
+            res.status(400).json({ message: "Map not found" });
+            return;
+        }
+        let space = await client.$transaction(async () => {
+            const space = await client.space.create({
+                data: {
+                    name: parsedSpaceData.data.name,
+                    width: map.width,
+                    height: map.height,
+                    creatorId: req.userId
+                }
+            });
+            await client.spaceElements.createMany({
+                data: map.mapElements.map(e => ({
+                    spaceId: space.id,
+                    elementId: e.elementId,
+                    x: e.x,
+                    y: e.y
+                }))
+            });
+            return space;
+        });
+        console.log("space created");
+        res.json({ spaceId: space.id });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
 router.delete('/space/:spaceId', async (req, res) => {
+    const id = req.params.spaceId;
     try {
-        const id = req.params;
+        const existence = await client.space.findUnique({ where: { id: id }, select: { creatorId: true } });
+        if (!existence) {
+            return res.status(403).json({ message: "Space doesnot exist" });
+        }
+        if (existence.creatorId !== req.userId) {
+            res.status(403).json({ message: "Unauthorized" });
+        }
         const dbDataDelete = await client.space.delete({
             where: { id: id }
         });
@@ -61,14 +105,34 @@ router.get('/space/all', async (req, res) => {
     }
 });
 router.get('/space/:spaceId', async (req, res) => {
-    const id = req.params;
+    const id = req.params.spaceId;
     try {
-        const dbData = await client.spaceElements.findMany({ where: { spaceId: id }, select: {
-                elementId: true,
-                x: true,
-                y: true
+        const dbData = await client.space.findUnique({ where: { id: id },
+            include: {
+                spaceElements: {
+                    include: {
+                        element: true
+                    }
+                }
             } });
-        return res.status(200).json({ dbData });
+        if (!dbData) {
+            return res.status(403).json({ message: "Data not found" });
+        }
+        return res.status(200).json({
+            "dimensions": `${dbData.height}x${dbData.width}`,
+            spaceElements: dbData.spaceElements.map(e => ({
+                id: e.id,
+                element: {
+                    id: e.element?.id,
+                    imageUrl: e.element?.imageUrl,
+                    width: e.element?.width,
+                    height: e.element?.height,
+                    static: e.element?.static
+                },
+                x: e.x,
+                y: e.y
+            }))
+        });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
@@ -79,6 +143,21 @@ router.post('/space/element', async (req, res) => {
     const parsedResult = spaceElements.safeParse(body);
     if (!parsedResult.success) {
         return res.status(400).json({ message: "invalid inputs" });
+    }
+    const space = await client.space.findUnique({
+        where: { id: parsedResult.data.spaceId,
+            creatorId: req.userId
+        },
+        select: {
+            width: true,
+            height: true
+        }
+    });
+    if (!space) {
+        return res.status(400).json({ message: "Space not found" });
+    }
+    if (parsedResult.data.x < 0 || parsedResult.data.y < 0 || parsedResult.data.x > space.width || parsedResult.data.y > space.height) {
+        return;
     }
     try {
         const dbData = await client.spaceElements.create({

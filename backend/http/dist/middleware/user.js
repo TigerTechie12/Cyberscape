@@ -2,7 +2,7 @@ import express from 'express';
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET;
-export function verifyToken(req, res, next) {
+export function userMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer')) {
         return res.status(403).send("Unauthorized");

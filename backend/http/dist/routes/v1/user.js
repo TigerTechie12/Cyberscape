@@ -47,8 +47,31 @@ router.get('/avatars', async (req, res) => {
         res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/metadata/bulk?ids=[]', (req, res) => {
-    //get info from db and return
-    return res.status(200).json({});
+router.get('/metadata/bulk', async (req, res) => {
+    const userIdString = (req.query.ids ?? "[]");
+    const userIds = (userIdString).slice(1, userIdString?.length - 1).split("");
+    console.log(userIds);
+    try {
+        const metaData = await client.user.findMany({
+            where: {
+                id: {
+                    in: userIds
+                }
+            },
+            select: {
+                id: true,
+                avatar: true
+            }
+        });
+        return res.status(200).json({
+            avatars: metaData.map((m) => ({
+                userId: m.id,
+                imageUrl: m.avatar?.imageUrl ?? null
+            }))
+        });
+    }
+    catch (e) {
+        res.status(403).json({ message: "Something went wrong" });
+    }
 });
 //# sourceMappingURL=user.js.map

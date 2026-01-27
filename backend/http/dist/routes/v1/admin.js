@@ -2,6 +2,8 @@ import { Router } from "express";
 import { mapCreator, updateImage, avatarInputs, adminMap } from "common";
 import { client } from '@repo/db/client';
 const router = Router();
+import { adminMiddleware } from "src/middleware/admin.js";
+router.use(adminMiddleware);
 router.post('/admin/element', async (req, res) => {
     const body = req.body;
     const parsedData = mapCreator.safeParse(body);
@@ -27,7 +29,7 @@ router.post('/admin/element', async (req, res) => {
     }
 });
 router.put('/admin/element/:elementId', async (req, res) => {
-    const id = req.params;
+    const id = req.params.elementId;
     const body = req.body;
     const parsedData = updateImage.safeParse(body);
     if (!parsedData.success) {
@@ -74,7 +76,21 @@ router.post('/admin/map', async (req, res) => {
         return res.json({ message: "Wrong Inputs" });
     }
     try {
-        return res.status(200).json({});
+        const mapData = await client.maps.create({
+            data: { thumbnail: parsedResult.data.thumbnail,
+                name: parsedResult.data.name,
+                height: parseInt(parsedResult.data.dimensions.split("x")[0]),
+                width: parseInt(parsedResult.data.dimensions.split("x")[1]),
+                mapElements: {
+                    create: parsedResult.data.defaultElements.map(e => ({
+                        elementId: e.elementId,
+                        x: e.x,
+                        y: e.y
+                    }))
+                } }
+        });
+        const mapId = mapData.id;
+        return res.status(200).json({ mapId });
     }
     catch (e) {
         return res.status(403).json({
