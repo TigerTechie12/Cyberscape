@@ -1,1 +1,1 @@
-export type outgoingMessages=any
+export type OutgoingMessage=any
