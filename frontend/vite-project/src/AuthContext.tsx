@@ -4,52 +4,52 @@ import {
   useState,
   useEffect,
   type ReactNode,
-} from "react";
+} from "react"
 
 interface AuthContextType {
-  token: string | null;
-  userType: "Admin" | "User" | null;
-  login: (token: string, type: "Admin" | "User") => void;
-  logout: () => void;
-  isLoggedIn: boolean;
-  isAdmin: boolean;
+  token: string | null
+  userType: "Admin" | "User" | null
+  login: (token: string, type: "Admin" | "User") => void
+  logout: () => void
+  isLoggedIn: boolean
+  isAdmin: boolean
 }
 
-const AuthContext = createContext<AuthContextType>(null!);
+const AuthContext = createContext<AuthContextType>(null!)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [userType, setUserType] = useState<"Admin" | "User" | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [token, setToken] = useState<string | null>(null)
+  const [userType, setUserType] = useState<"Admin" | "User" | null>(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem("token");
+    const stored = localStorage.getItem("token")
     const storedType = localStorage.getItem("userType") as
       | "Admin"
       | "User"
-      | null;
+      | null
     if (stored) {
-      setToken(stored);
-      setUserType(storedType);
+      setToken(stored)
+      setUserType(storedType)
     }
-    setLoaded(true);
-  }, []);
+    setLoaded(true)
+  }, [])
 
   function login(newToken: string, type: "Admin" | "User") {
-    localStorage.setItem("token", newToken);
-    localStorage.setItem("userType", type);
-    setToken(newToken);
-    setUserType(type);
+    localStorage.setItem("token", newToken)
+    localStorage.setItem("userType", type)
+    setToken(newToken)
+    setUserType(type)
   }
 
   function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userType");
-    setToken(null);
-    setUserType(null);
+    localStorage.removeItem("token")
+    localStorage.removeItem("userType")
+    setToken(null)
+    setUserType(null)
   }
 
-  if (!loaded) return null;
+  if (!loaded) return null
 
   return (
     <AuthContext.Provider
@@ -64,9 +64,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  return useContext(AuthContext)
 }
