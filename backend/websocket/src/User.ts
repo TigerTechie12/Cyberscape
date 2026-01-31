@@ -47,13 +47,13 @@ export function createUser(ws: WebSocket): User {
         y,
         send,
         destroy: () => {
-            if (spaceId) {
+            if (user.spaceId) {
                 RoomManager.broadcast(
-                    spaceId,
+                    user.spaceId,
                     id,
-                    { type: "user-left", payload: { odunId } }
+                    { type: "user-left", payload: { odunId: user.odunId } }
                 )
-                RoomManager.removeUser(spaceId, id)
+                RoomManager.removeUser(user.spaceId, id)
             }
         }
     }
@@ -77,11 +77,11 @@ export function createUser(ws: WebSocket): User {
 
         try {
             const decoded = jwt.verify(payload.token, JWT_PASSWORD) as JwtPayload
-            if (!decoded.odunId) {
+            if (!decoded.userId) {
                 ws.close()
                 return
             }
-            odunId = decoded.odunId
+            odunId = decoded.userId as string
             user.odunId = odunId
         } catch (error) {
             ws.close()
@@ -102,8 +102,8 @@ export function createUser(ws: WebSocket): User {
 
         RoomManager.addUser(spaceId, user)
 
-        x = Math.floor(Math.random() * space.width)
-        y = Math.floor(Math.random() * space.height)
+        x = Math.floor(Math.random() * space.width!)
+        y = Math.floor(Math.random() * space.height!)
         user.x = x
         user.y = y
 
@@ -113,7 +113,7 @@ export function createUser(ws: WebSocket): User {
                 spawn: { x, y },
                 users: RoomManager.getUsersInRoom(spaceId)
                     .filter(u => u.id !== id)
-                    .map(u => ({ id: u.id }))
+                    .map(u => ({ id: u.id, x: u.x, y: u.y }))
             }
         })
 

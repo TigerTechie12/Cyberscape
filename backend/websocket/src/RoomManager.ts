@@ -3,6 +3,8 @@ import type {OutgoingMessage} from './types.js'
 
 type UserType={
     id:string,
+    x:number,
+    y:number,
     send:(message:OutgoingMessage)=>void
 }
 
