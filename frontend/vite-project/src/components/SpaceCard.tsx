@@ -1,23 +1,23 @@
-import { useNavigate } from "react-router-dom";
-import { deleteSpace } from "../api";
-import type { SpaceListItem } from "../types";
+import { useNavigate } from "react-router-dom"
+import { deleteSpace } from "../api"
+import type { SpaceListItem } from "../types"
 
 interface Props {
-  space: SpaceListItem;
-  onDeleted: () => void;
+  space: SpaceListItem
+  onDeleted: () => void
 }
 
 export default function SpaceCard({ space, onDeleted }: Props) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   async function handleDelete(e: React.MouseEvent) {
-    e.stopPropagation();
-    if (!confirm(`Delete space "${space.name}"?`)) return;
+    e.stopPropagation()
+    if (!confirm(`Delete space "${space.name}"?`)) return
     try {
-      await deleteSpace(space.id);
-      onDeleted();
+      await deleteSpace(space.id)
+      onDeleted()
     } catch {
-      alert("Failed to delete space.");
+      alert("Failed to delete space.")
     }
   }
 
@@ -72,5 +72,5 @@ export default function SpaceCard({ space, onDeleted }: Props) {
         </button>
       </div>
     </div>
-  );
+  )
 }

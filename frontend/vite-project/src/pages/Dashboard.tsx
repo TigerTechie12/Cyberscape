@@ -1,36 +1,37 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAllSpaces } from "../api";
-import { useAuth } from "../AuthContext";
-import type { SpaceListItem } from "../types";
-import SpaceCard from "../components/SpaceCard";
-import CreateSpaceModal from "../components/CreateSpaceModal";
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { getAllSpaces } from "../api"
+import { useAuth } from "../AuthContext"
+import type { SpaceListItem } from "../types"
+import SpaceCard from "../components/SpaceCard"
+import CreateSpaceModal from "../components/CreateSpaceModal"
 
 export default function Dashboard() {
-  const [spaces, setSpaces] = useState<SpaceListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const { logout, isAdmin } = useAuth();
-  const navigate = useNavigate();
+  const [spaces, setSpaces] = useState<SpaceListItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+  const { logout, isAdmin } = useAuth()
+  const navigate = useNavigate()
 
   async function fetchSpaces() {
     try {
-      const data = await getAllSpaces();
-      setSpaces(data);
+      const data = await getAllSpaces()
+      setSpaces(data)
     } catch {
-      setSpaces([]);
+      setSpaces([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchSpaces();
-  }, []);
+    fetchSpaces()
+  }, [])
+
 
   return (
     <div className="min-h-screen">
-      {/* Top bar */}
+
       <header className="flex items-center justify-between border-b border-gray-800 px-6 py-4">
         <h1 className="text-2xl font-bold text-cyan-400">CYBERSCAPE</h1>
         <div className="flex items-center gap-4">
@@ -44,8 +45,8 @@ export default function Dashboard() {
           )}
           <button
             onClick={() => {
-              logout();
-              navigate("/login");
+              logout()
+              navigate("/login")
             }}
             className="rounded-lg bg-gray-800 px-4 py-2 text-sm text-gray-300 transition hover:bg-gray-700"
           >
@@ -54,7 +55,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Content */}
+
       <main className="mx-auto max-w-6xl px-6 py-8">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-white">Your Spaces</h2>
@@ -93,5 +94,5 @@ export default function Dashboard() {
         />
       )}
     </div>
-  );
+  )
 }

@@ -1,28 +1,32 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { signup } from "../api";
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { signup, signin } from "../api"
+import { useAuth } from "../AuthContext"
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [type, setType] = useState<"User" | "Admin">("User");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [type, setType] = useState<"User" | "Admin">("User")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
     try {
-      const data = await signup(email, password, type);
+      const data = await signup(email, password, type)
       if (data.userId) {
-        navigate("/dashboard");
+        const signinData = await signin(email, password, type)
+        login(signinData.token, type)
+        navigate(type === "Admin" ? "/admin" : "/dashboard")
       }
     } catch {
-      setError("Signup failed. Email may already be in use.");
+      setError("Signup failed. Email may already be in use.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -107,5 +111,5 @@ export default function Signup() {
         </p>
       </div>
     </div>
-  );
+  )
 }

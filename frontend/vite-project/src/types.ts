@@ -1,4 +1,4 @@
-// === API Response Types ===
+
 
 export interface SignupResponse {
   userId: string;
@@ -53,7 +53,16 @@ export interface Element {
   width: number;
 }
 
-// === WebSocket Message Types ===
+export interface MapItem {
+  id: string;
+  name: string;
+  thumbnail: string | null;
+  width: number;
+  height: number;
+  mapElements: { id: string; elementId: string; x: number; y: number }[];
+}
+
+
 
 export interface WsSendJoin {
   type: "join";

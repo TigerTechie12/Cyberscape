@@ -1,68 +1,65 @@
-import { useEffect, useState } from "react";
-import { getElements, adminCreateElement, adminUpdateElement } from "../api";
-import type { Element } from "../types";
+import { useEffect, useState } from "react"
+import { getElements, adminCreateElement, adminUpdateElement } from "../api"
+import type { Element } from "../types"
 
 export default function AdminElements() {
-  const [elements, setElements] = useState<Element[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [elements, setElements] = useState<Element[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Create form
-  const [imageUrl, setImageUrl] = useState("");
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
-  const [isStatic, setIsStatic] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const [imageUrl, setImageUrl] = useState("")
+  const [width, setWidth] = useState(1)
+  const [height, setHeight] = useState(1)
+  const [isStatic, setIsStatic] = useState(false)
+  const [creating, setCreating] = useState(false)
 
-  // Inline update state
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editUrl, setEditUrl] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editUrl, setEditUrl] = useState("")
 
   async function fetchElements() {
     try {
-      const data = await getElements();
-      setElements(data);
+      const data = await getElements()
+      setElements(data)
     } catch {
-      setElements([]);
+      setElements([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchElements();
-  }, []);
+    fetchElements()
+  }, [])
 
   async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    setCreating(true);
+    e.preventDefault()
+    setCreating(true)
     try {
-      await adminCreateElement(imageUrl, width, height, isStatic);
-      setImageUrl("");
-      setWidth(1);
-      setHeight(1);
-      setIsStatic(false);
-      fetchElements();
+      await adminCreateElement(imageUrl, width, height, isStatic)
+      setImageUrl("")
+      setWidth(1)
+      setHeight(1)
+      setIsStatic(false)
+      fetchElements()
     } catch {
-      alert("Failed to create element.");
+      alert("Failed to create element.")
     } finally {
-      setCreating(false);
+      setCreating(false)
     }
   }
 
   async function handleUpdate(elementId: string) {
     try {
-      await adminUpdateElement(elementId, editUrl);
-      setEditingId(null);
-      setEditUrl("");
-      fetchElements();
+      await adminUpdateElement(elementId, editUrl)
+      setEditingId(null)
+      setEditUrl("")
+      fetchElements()
     } catch {
-      alert("Failed to update element.");
+      alert("Failed to update element.")
     }
   }
 
   return (
     <div className="space-y-6">
-      {/* Create form */}
       <div className="rounded-xl border border-gray-700 bg-gray-900 p-6">
         <h3 className="mb-4 text-lg font-semibold text-white">
           Create Element
@@ -123,7 +120,6 @@ export default function AdminElements() {
         </form>
       </div>
 
-      {/* Element list */}
       <div>
         <h3 className="mb-3 text-lg font-semibold text-white">
           Existing Elements
@@ -145,7 +141,7 @@ export default function AdminElements() {
                     alt="element"
                     className="max-h-full max-w-full object-contain"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
+                      (e.target as HTMLImageElement).style.display = "none"
                     }}
                   />
                 </div>
@@ -185,8 +181,8 @@ export default function AdminElements() {
                 ) : (
                   <button
                     onClick={() => {
-                      setEditingId(el.id);
-                      setEditUrl(el.imageUrl);
+                      setEditingId(el.id)
+                      setEditUrl(el.imageUrl)
                     }}
                     className="mt-2 text-sm text-cyan-400 hover:underline"
                   >
@@ -199,5 +195,5 @@ export default function AdminElements() {
         )}
       </div>
     </div>
-  );
+  )
 }

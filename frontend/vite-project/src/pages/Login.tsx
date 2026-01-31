@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { signin } from "../api"
 import { useAuth } from "../AuthContext"
-import axios from "axios"
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -17,13 +16,13 @@ export default function Login() {
     setError("")
     setLoading(true)
     try {
-      const data = await signin(email, password, type);
-      login(data.token, type);
-      navigate(type === "Admin" ? "/admin" : "/dashboard");
+      const data = await signin(email, password, type)
+      login(data.token, type)
+      navigate(type === "Admin" ? "/admin" : "/dashboard")
     } catch {
-      setError("Invalid credentials. Please try again.");
+      setError("Invalid credentials. Please try again.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -94,7 +93,6 @@ export default function Login() {
 
           <button
             type="submit"
-            onClick={()=>{axios.post('http://localhost:3000/api/v1/signin',{email,password,type})}}
             disabled={loading}
             className="w-full rounded-lg bg-cyan-600 py-3 font-semibold text-white transition hover:bg-cyan-500 disabled:opacity-50"
           >
@@ -110,5 +108,5 @@ export default function Login() {
         </p>
       </div>
     </div>
-  );
+  )
 }

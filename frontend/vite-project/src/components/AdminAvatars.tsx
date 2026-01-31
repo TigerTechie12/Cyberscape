@@ -1,49 +1,47 @@
-import { useEffect, useState } from "react";
-import { getAvatars, adminCreateAvatar } from "../api";
-import type { Avatar } from "../types";
+import { useEffect, useState } from "react"
+import { getAvatars, adminCreateAvatar } from "../api"
+import type { Avatar } from "../types"
 
 export default function AdminAvatars() {
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [avatars, setAvatars] = useState<Avatar[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Create form
-  const [imageUrl, setImageUrl] = useState("");
-  const [name, setName] = useState("");
-  const [creating, setCreating] = useState(false);
+  const [imageUrl, setImageUrl] = useState("")
+  const [name, setName] = useState("")
+  const [creating, setCreating] = useState(false)
 
   async function fetchAvatars() {
     try {
-      const data = await getAvatars();
-      setAvatars(data);
+      const data = await getAvatars()
+      setAvatars(data)
     } catch {
-      setAvatars([]);
+      setAvatars([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchAvatars();
-  }, []);
+    fetchAvatars()
+  }, [])
 
   async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    setCreating(true);
+    e.preventDefault()
+    setCreating(true)
     try {
-      await adminCreateAvatar(imageUrl, name);
-      setImageUrl("");
-      setName("");
-      fetchAvatars();
+      await adminCreateAvatar(imageUrl, name)
+      setImageUrl("")
+      setName("")
+      fetchAvatars()
     } catch {
-      alert("Failed to create avatar.");
+      alert("Failed to create avatar.")
     } finally {
-      setCreating(false);
+      setCreating(false)
     }
   }
 
   return (
     <div className="space-y-6">
-      {/* Create form */}
       <div className="rounded-xl border border-gray-700 bg-gray-900 p-6">
         <h3 className="mb-4 text-lg font-semibold text-white">
           Create Avatar
@@ -79,7 +77,6 @@ export default function AdminAvatars() {
         </form>
       </div>
 
-      {/* Avatar list */}
       <div>
         <h3 className="mb-3 text-lg font-semibold text-white">
           Existing Avatars
@@ -102,7 +99,7 @@ export default function AdminAvatars() {
                       alt={avatar.name || "avatar"}
                       className="h-full w-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
+                        (e.target as HTMLImageElement).style.display = "none"
                       }}
                     />
                   ) : (
@@ -119,5 +116,5 @@ export default function AdminAvatars() {
         )}
       </div>
     </div>
-  );
+  )
 }

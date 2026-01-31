@@ -1,32 +1,32 @@
-import { useState } from "react";
-import { createSpace } from "../api";
+import { useState } from "react"
+import { createSpace } from "../api"
 
 interface Props {
-  onClose: () => void;
-  onCreated: () => void;
+  onClose: () => void
+  onCreated: () => void
 }
 
 export default function CreateSpaceModal({ onClose, onCreated }: Props) {
-  const [name, setName] = useState("");
-  const [width, setWidth] = useState(20);
-  const [height, setHeight] = useState(20);
-  const [mapId, setMapId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [name, setName] = useState("")
+  const [width, setWidth] = useState(20)
+  const [height, setHeight] = useState(20)
+  const [mapId, setMapId] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
     try {
-      const dimensions = `${height}x${width}`;
-      await createSpace(name, dimensions, mapId || undefined);
-      onCreated();
-      onClose();
+      const dimensions = `${height}x${width}`
+      await createSpace(name, dimensions, mapId || undefined)
+      onCreated()
+      onClose()
     } catch {
-      setError("Failed to create space.");
+      setError("Failed to create space.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -107,5 +107,5 @@ export default function CreateSpaceModal({ onClose, onCreated }: Props) {
         </form>
       </div>
     </div>
-  );
+  )
 }

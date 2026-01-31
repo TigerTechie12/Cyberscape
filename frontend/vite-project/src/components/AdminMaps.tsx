@@ -1,27 +1,46 @@
-import { useState } from "react";
-import { adminCreateMap } from "../api";
+import { useEffect, useState } from "react"
+import { adminCreateMap, getMaps } from "../api"
+import type { MapItem } from "../types"
 
 interface DefaultElement {
-  elementId: string;
-  x: number;
-  y: number;
+  elementId: string
+  x: number
+  y: number
 }
 
 export default function AdminMaps() {
-  const [name, setName] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
-  const [width, setWidth] = useState(20);
-  const [height, setHeight] = useState(20);
-  const [elements, setElements] = useState<DefaultElement[]>([]);
-  const [creating, setCreating] = useState(false);
-  const [lastMapId, setLastMapId] = useState<string | null>(null);
+  const [maps, setMaps] = useState<MapItem[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const [name, setName] = useState("")
+  const [thumbnail, setThumbnail] = useState("")
+  const [width, setWidth] = useState(20)
+  const [height, setHeight] = useState(20)
+  const [elements, setElements] = useState<DefaultElement[]>([])
+  const [creating, setCreating] = useState(false)
+  const [lastMapId, setLastMapId] = useState<string | null>(null)
+
+  async function fetchMaps() {
+    try {
+      const data = await getMaps()
+      setMaps(data)
+    } catch {
+      setMaps([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMaps()
+  }, [])
 
   function addElement() {
-    setElements([...elements, { elementId: "", x: 0, y: 0 }]);
+    setElements([...elements, { elementId: "", x: 0, y: 0 }])
   }
 
   function removeElement(index: number) {
-    setElements(elements.filter((_, i) => i !== index));
+    setElements(elements.filter((_, i) => i !== index))
   }
 
   function updateElement(
@@ -31,31 +50,32 @@ export default function AdminMaps() {
   ) {
     setElements(
       elements.map((el, i) => (i === index ? { ...el, [field]: value } : el))
-    );
+    )
   }
 
   async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    setCreating(true);
-    setLastMapId(null);
+    e.preventDefault()
+    setCreating(true)
+    setLastMapId(null)
     try {
-      const dimensions = `${height}x${width}`;
+      const dimensions = `${height}x${width}`
       const result = await adminCreateMap(
         thumbnail,
         dimensions,
         name,
         elements.filter((el) => el.elementId.trim() !== "")
-      );
-      setLastMapId(result.mapId);
-      setName("");
-      setThumbnail("");
-      setWidth(20);
-      setHeight(20);
-      setElements([]);
+      )
+      setLastMapId(result.mapId)
+      setName("")
+      setThumbnail("")
+      setWidth(20)
+      setHeight(20)
+      setElements([])
+      fetchMaps()
     } catch {
-      alert("Failed to create map.");
+      alert("Failed to create map.")
     } finally {
-      setCreating(false);
+      setCreating(false)
     }
   }
 
@@ -117,7 +137,6 @@ export default function AdminMaps() {
             </div>
           </div>
 
-          {/* Default Elements */}
           <div>
             <div className="mb-2 flex items-center justify-between">
               <label className="text-sm font-medium text-gray-300">
@@ -209,6 +228,49 @@ export default function AdminMaps() {
           </div>
         )}
       </div>
+
+      <div>
+        <h3 className="mb-3 text-lg font-semibold text-white">
+          Existing Maps
+        </h3>
+        {loading ? (
+          <p className="text-gray-400">Loading...</p>
+        ) : maps.length === 0 ? (
+          <p className="text-gray-500">No maps yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {maps.map((map) => (
+              <div
+                key={map.id}
+                className="rounded-lg border border-gray-700 bg-gray-900 p-4"
+              >
+                <div className="mb-2 flex h-24 items-center justify-center rounded bg-gray-800">
+                  {map.thumbnail ? (
+                    <img
+                      src={map.thumbnail}
+                      alt={map.name}
+                      className="max-h-full max-w-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none"
+                      }}
+                    />
+                  ) : (
+                    <span className="text-2xl text-gray-600">?</span>
+                  )}
+                </div>
+                <p className="font-medium text-white">{map.name}</p>
+                <p className="text-sm text-gray-300">
+                  {map.width}x{map.height}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {map.mapElements.length} element{map.mapElements.length !== 1 ? "s" : ""}
+                </p>
+                <p className="truncate text-xs text-gray-500">{map.id}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
