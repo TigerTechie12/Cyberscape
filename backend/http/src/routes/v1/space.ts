@@ -3,9 +3,9 @@ import {spaceData} from "common"
 import {client} from '@repo/db/client'
 import { spaceElements } from "common";
 const router=Router()
-import { userMiddleware } from "src/middleware/user.js";
+import { userMiddleware } from "../../middleware/user.js";
 import jwt,{type JwtPayload}  from "jsonwebtoken";
-const JWT_SECRET:any=process.env.JWT_SECRET
+
 router.use(userMiddleware)
 router.post('/space',async(req,res)=>{
 const body=req.body
@@ -60,7 +60,6 @@ try{
     console.log("space created")
 res.json({spaceId:space.id})
 }
-   
 
 
 catch(e){return res.status(403).json({message:"Something went wrong"})}
@@ -70,24 +69,25 @@ catch(e){return res.status(403).json({message:"Something went wrong"})}
 
 router.delete('/space/:spaceId',async(req,res)=>{
     const id:any=req.params.spaceId
-    try{ 
+    try{
 const existence=await client.space.findUnique({where:{id:id},select:{creatorId:true}})
-if(!existence){return res.status(403).json({message:"Space doesnot exist"})}
-if(existence.creatorId!==req.userId){  res.status(403).json({message: "Unauthorized"})}
-        const dbDataDelete=await client.space.delete({
+if(!existence){return res.status(403).json({message:"Space does not exist"})}
+if(existence.creatorId!==req.userId){ return res.status(403).json({message: "Unauthorized"})}
+        await client.space.delete({
             where:{id:id}
           })
-    return    res.status(400).json({message:'space deleted'})}
+    return    res.status(200).json({message:'space deleted'})}
     catch(e){
     return    res.status(403).json({message:"Something went wrong"})}
-  
+
 })
 router.get('/space/all',async(req,res)=>{
-     const authHeader=req.headers.authorization
-        const token:any=authHeader?.split("")[1] 
-            const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
-            const id:any=decoded.userId 
     try{
+        const JWT_SECRET:any=process.env.JWT_SECRET
+        const authHeader=req.headers.authorization
+        const token:any=authHeader?.split(" ")[1]
+        const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
+        const id:any=decoded.userId
         const dbData=await client.space.findMany({
 where:{creatorId:id},
 select:{
@@ -106,7 +106,7 @@ thumbnail:true
 router.get('/space/:spaceId',async(req,res)=>{
 
 const id:any=req.params.spaceId
-try{const dbData=await client.space.findUnique({where:{id:id}, 
+try{const dbData=await client.space.findUnique({where:{id:id},
     include:{
 spaceElements:{
     include:{
@@ -154,7 +154,7 @@ if(!parsedResult.success){
         return res.status(400).json({message:"Space not found"})
     }
     if(parsedResult.data.x<0 || parsedResult.data.y<0 || parsedResult.data.x>space.width! || parsedResult.data.y>space.height!){
-        return  
+        return res.status(400).json({message:"Coordinates out of bounds"})
     }
     try{
         const dbData=await client.spaceElements.create({
@@ -163,7 +163,7 @@ if(!parsedResult.success){
             spaceId:parsedResult.data?.spaceId,
             x:parsedResult.data.x,
             y:parsedResult.data.y
-           } 
+           }
         })
    return     res.status(200).json({message:"element created"})
     }
@@ -177,7 +177,7 @@ if(!parsedResult.success){
 router.delete('/space/element/:id',async(req,res)=>{
     const id:any=req.params.id
 try{
-const deleteData=await client.spaceElements.deleteMany({where:{spaceId:id}})
+const deleteData=await client.spaceElements.delete({where:{id:id}})
    return res.status(200).json({message:"element deleted"})
 }
 
@@ -188,17 +188,20 @@ catch(e){
 
 router.get('/elements',async(req,res)=>{
     try{
-const authHeader=req.headers.authorization
-    const token:any=authHeader?.split("")[1] 
+        const JWT_SECRET:any=process.env.JWT_SECRET
+        const authHeader=req.headers.authorization
+        const token:any=authHeader?.split(" ")[1]
         const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
-        const id:any=decoded.userId 
+        const id:any=decoded.userId
 const elements=await client.element.findMany({
     where:{creatorId:id}
 })
-     return    res.json({elements}).status(200)
+     return    res.status(200).json({elements})
     }
-   
+
     catch(e){
- return      res.status(403).json({message:"Something went wrong"})   
+ return      res.status(403).json({message:"Something went wrong"})
     }
 })
+
+export default router

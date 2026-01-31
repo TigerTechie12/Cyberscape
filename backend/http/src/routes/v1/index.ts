@@ -43,7 +43,7 @@ if(dbFindUser.type!==parsedData.data.type){
 const isValid=await bcrypt.compare(parsedData.data.password,dbFindUser.password)
 if(isValid){
     const token=jwt.sign({username:parsedData.data.username,
-
+        userId:dbFindUser.id,
         type:dbFindUser.type
     },
 JWT_SECRET,{
