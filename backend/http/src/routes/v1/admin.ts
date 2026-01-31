@@ -2,7 +2,7 @@ import { Router } from "express";
 import { mapCreator,updateImage,avatarInputs,adminMap } from "common";
 import {client} from '@repo/db/client'
 const router=Router()
-import { adminMiddleware } from "src/middleware/admin.js";
+import { adminMiddleware } from "../../middleware/admin.js";
 router.use(adminMiddleware)
 router.post('/admin/element',async(req,res)=>{
     const body=req.body
@@ -110,4 +110,6 @@ catch(e){
 
 
 })
+
+export default router
 

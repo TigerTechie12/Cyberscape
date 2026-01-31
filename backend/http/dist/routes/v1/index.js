@@ -55,4 +55,5 @@ router.post('/signin', async (req, res) => {
         return res.status(403).json({ message: "something went wrong" });
     }
 });
+export default router;
 //# sourceMappingURL=index.js.map

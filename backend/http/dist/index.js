@@ -1,11 +1,13 @@
 import express from 'express';
-import { Router } from 'express';
-import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET;
+import cors from 'cors';
+import router from './routes/v1/index.js';
 const app = express();
 const port = 3000;
-app.use("/api/v1", Router);
+// Middleware MUST come BEFORE routes
+app.use(cors());
 app.use(express.json());
+// Use the actual router, not the Router class
+app.use("/api/v1", router);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
