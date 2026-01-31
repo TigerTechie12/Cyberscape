@@ -5,6 +5,7 @@ import { useAuth } from "../AuthContext"
 import { useWebSocket } from "../useWebSocket"
 import type { SpaceElement, WsServerMessage } from "../types"
 import GameCanvas from "../components/GameCanvas"
+import SpaceElementPanel from "../components/SpaceElementPanel"
 
 export default function SpaceView() {
   const { spaceId } = useParams<{ spaceId: string }>()
@@ -15,12 +16,14 @@ export default function SpaceView() {
   const [gridHeight, setGridHeight] = useState(0)
   const [spaceElements, setSpaceElements] = useState<SpaceElement[]>([])
   const [spaceLoaded, setSpaceLoaded] = useState(false)
+  const [showElementPanel, setShowElementPanel] = useState(false)
 
   const [myPosition, setMyPosition] = useState({ x: 0, y: 0 })
   const [otherPlayers, setOtherPlayers] = useState<
     Map<string, { x: number, y: number }>
   >(new Map())
   const [joined, setJoined] = useState(false)
+  const [moveRejected, setMoveRejected] = useState(false)
 
   const myPosRef = useRef(myPosition)
   myPosRef.current = myPosition
@@ -45,6 +48,12 @@ export default function SpaceView() {
       })
   }, [spaceId, navigate])
 
+  function reloadSpace() {
+    if (!spaceId) return
+    getSpace(spaceId).then((data) => {
+      setSpaceElements(data.spaceElements)
+    })
+  }
 
   const handleWsMessage = useCallback((msg: WsServerMessage) => {
     switch (msg.type) {
@@ -53,9 +62,7 @@ export default function SpaceView() {
         setOtherPlayers((prev) => {
           const map = new Map(prev)
           for (const user of msg.payload.users) {
-            if (!map.has(user.id)) {
-              map.set(user.id, { x: 0, y: 0 })
-            }
+            map.set(user.id, { x: user.x, y: user.y })
           }
           return map
         })
@@ -89,6 +96,8 @@ export default function SpaceView() {
           x: msg.payload.x,
           y: msg.payload.y,
         })
+        setMoveRejected(true)
+        setTimeout(() => setMoveRejected(false), 300)
         break
 
       case "user-left":
@@ -176,6 +185,7 @@ export default function SpaceView() {
         myPosition={myPosition}
         otherPlayers={otherPlayers}
         spaceElements={spaceElements}
+        moveRejected={moveRejected}
       />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-4">
@@ -186,20 +196,37 @@ export default function SpaceView() {
           &larr; Back
         </button>
 
-        <div className="rounded-lg bg-gray-900/80 px-4 py-2 text-sm text-gray-300 backdrop-blur">
-          <span className="text-cyan-400">
-            ({myPosition.x}, {myPosition.y})
-          </span>
-          <span className="mx-2 text-gray-600">|</span>
-          <span>
-            {otherPlayers.size} other{otherPlayers.size !== 1 ? "s" : ""} online
-          </span>
-          <span className="mx-2 text-gray-600">|</span>
-          <span className="text-gray-500">
-            {gridWidth}x{gridHeight}
-          </span>
+        <div className="flex items-center gap-2">
+          <div className="rounded-lg bg-gray-900/80 px-4 py-2 text-sm text-gray-300 backdrop-blur">
+            <span className="text-cyan-400">
+              ({myPosition.x}, {myPosition.y})
+            </span>
+            <span className="mx-2 text-gray-600">|</span>
+            <span>
+              {otherPlayers.size} other{otherPlayers.size !== 1 ? "s" : ""} online
+            </span>
+            <span className="mx-2 text-gray-600">|</span>
+            <span className="text-gray-500">
+              {gridWidth}x{gridHeight}
+            </span>
+          </div>
+          <button
+            onClick={() => setShowElementPanel((v) => !v)}
+            className="pointer-events-auto rounded-lg bg-gray-900/80 px-4 py-2 text-sm text-cyan-400 backdrop-blur transition hover:bg-gray-800"
+          >
+            {showElementPanel ? "Close Elements" : "Elements"}
+          </button>
         </div>
       </div>
+
+      {showElementPanel && spaceId && (
+        <SpaceElementPanel
+          spaceId={spaceId}
+          spaceElements={spaceElements}
+          onChanged={reloadSpace}
+          onClose={() => setShowElementPanel(false)}
+        />
+      )}
 
       {!joined && spaceLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">

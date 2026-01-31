@@ -5,6 +5,7 @@ import { useAuth } from "../AuthContext"
 import type { SpaceListItem } from "../types"
 import SpaceCard from "../components/SpaceCard"
 import CreateSpaceModal from "../components/CreateSpaceModal"
+import AvatarSelector from "../components/AvatarSelector"
 
 export default function Dashboard() {
   const [spaces, setSpaces] = useState<SpaceListItem[]>([])
@@ -57,6 +58,11 @@ export default function Dashboard() {
 
 
       <main className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mb-8 rounded-xl border border-gray-800 bg-gray-900 p-5">
+          <h2 className="mb-3 text-lg font-semibold text-white">Select Avatar</h2>
+          <AvatarSelector />
+        </div>
+
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-white">Your Spaces</h2>
           <button

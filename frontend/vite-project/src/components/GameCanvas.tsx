@@ -9,6 +9,7 @@ interface GameCanvasProps {
   myPosition: { x: number, y: number }
   otherPlayers: Map<string, { x: number, y: number }>
   spaceElements: SpaceElement[]
+  moveRejected?: boolean
 }
 
 function hashColor(str: string): string {
@@ -26,6 +27,7 @@ export default function GameCanvas({
   myPosition,
   otherPlayers,
   spaceElements,
+  moveRejected = false,
 }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imageCache = useRef<Map<string, HTMLImageElement | null>>(new Map())
@@ -37,6 +39,7 @@ export default function GameCanvas({
     myPosition,
     otherPlayers,
     spaceElements,
+    moveRejected,
   })
   propsRef.current = {
     gridWidth,
@@ -44,6 +47,7 @@ export default function GameCanvas({
     myPosition,
     otherPlayers,
     spaceElements,
+    moveRejected,
   }
 
   function getImage(url: string): HTMLImageElement | null {
@@ -71,6 +75,7 @@ export default function GameCanvas({
         myPosition: my,
         otherPlayers: others,
         spaceElements: elements,
+        moveRejected: rejected,
       } = propsRef.current
 
       canvas!.width = window.innerWidth
@@ -148,19 +153,25 @@ export default function GameCanvas({
         const px = my.x * TILE_SIZE
         const py = my.y * TILE_SIZE
 
-        ctx!.shadowColor = "#10b981"
-        ctx!.shadowBlur = 10
+        if (rejected) {
+          ctx!.shadowColor = "#ef4444"
+          ctx!.shadowBlur = 16
+          ctx!.fillStyle = "#ef4444"
+        } else {
+          ctx!.shadowColor = "#10b981"
+          ctx!.shadowBlur = 10
+          ctx!.fillStyle = "#10b981"
+        }
 
-        ctx!.fillStyle = "#10b981"
         ctx!.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6)
 
         ctx!.shadowBlur = 0
 
-        ctx!.strokeStyle = "#6ee7b7"
+        ctx!.strokeStyle = rejected ? "#fca5a5" : "#6ee7b7"
         ctx!.lineWidth = 2
         ctx!.strokeRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6)
 
-        ctx!.fillStyle = "#6ee7b7"
+        ctx!.fillStyle = rejected ? "#fca5a5" : "#6ee7b7"
         ctx!.font = "bold 10px monospace"
         ctx!.textAlign = "center"
         ctx!.fillText("YOU", px + TILE_SIZE / 2, py - 4)

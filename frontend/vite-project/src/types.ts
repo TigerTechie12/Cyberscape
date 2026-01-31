@@ -78,7 +78,7 @@ export type WsClientMessage = WsSendJoin | WsSendMove;
 
 export interface WsSpaceJoined {
   type: "space-joined";
-  payload: { spawn: { x: number; y: number }; users: { id: string }[] };
+  payload: { spawn: { x: number; y: number }; users: { id: string; x: number; y: number }[] };
 }
 
 export interface WsUserJoined {

@@ -18,7 +18,7 @@ function App() {
 
       <Route element={<ProtectedRoute userOnly />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/space" element={<SpaceView />} />
+        <Route path="/space/:spaceId" element={<SpaceView />} />
       </Route>
 
       <Route element={<ProtectedRoute adminOnly />}>
