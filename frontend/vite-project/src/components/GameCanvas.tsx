@@ -1,15 +1,17 @@
-import { useEffect, useRef } from "react"
-import type { SpaceElement } from "../types"
+import { useEffect, useRef, useCallback } from "react"
+import type { SpaceElement, Element } from "../types"
 
 const TILE_SIZE = 32
 
 interface GameCanvasProps {
   gridWidth: number
   gridHeight: number
-  myPosition: { x: number, y: number }
-  otherPlayers: Map<string, { x: number, y: number }>
+  myPosition: { x: number; y: number }
+  otherPlayers: Map<string, { x: number; y: number }>
   spaceElements: SpaceElement[]
   moveRejected?: boolean
+  placementElement: Element | null
+  onCanvasClick: (x: number, y: number) => void
 }
 
 function hashColor(str: string): string {
@@ -28,10 +30,13 @@ export default function GameCanvas({
   otherPlayers,
   spaceElements,
   moveRejected = false,
+  placementElement,
+  onCanvasClick,
 }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imageCache = useRef<Map<string, HTMLImageElement | null>>(new Map())
   const animFrameRef = useRef<number>(0)
+  const hoverGrid = useRef<{ x: number; y: number } | null>(null)
 
   const propsRef = useRef({
     gridWidth,
@@ -40,6 +45,7 @@ export default function GameCanvas({
     otherPlayers,
     spaceElements,
     moveRejected,
+    placementElement,
   })
   propsRef.current = {
     gridWidth,
@@ -48,6 +54,7 @@ export default function GameCanvas({
     otherPlayers,
     spaceElements,
     moveRejected,
+    placementElement,
   }
 
   function getImage(url: string): HTMLImageElement | null {
@@ -60,6 +67,66 @@ export default function GameCanvas({
     img.onload = () => imageCache.current.set(url, img)
     img.onerror = () => imageCache.current.set(url, null)
     return null
+  }
+
+  const screenToGrid = useCallback(
+    (clientX: number, clientY: number) => {
+      const canvas = canvasRef.current
+      if (!canvas) return null
+      const rect = canvas.getBoundingClientRect()
+      const sx = clientX - rect.left
+      const sy = clientY - rect.top
+
+      const camX =
+        propsRef.current.myPosition.x * TILE_SIZE -
+        canvas.width / 2 +
+        TILE_SIZE / 2
+      const camY =
+        propsRef.current.myPosition.y * TILE_SIZE -
+        canvas.height / 2 +
+        TILE_SIZE / 2
+
+      const worldX = sx + camX
+      const worldY = sy + camY
+
+      return {
+        x: Math.floor(worldX / TILE_SIZE),
+        y: Math.floor(worldY / TILE_SIZE),
+      }
+    },
+    []
+  )
+
+  function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
+    if (!propsRef.current.placementElement) {
+      hoverGrid.current = null
+      return
+    }
+    hoverGrid.current = screenToGrid(e.clientX, e.clientY)
+  }
+
+  function handleMouseLeave() {
+    hoverGrid.current = null
+  }
+
+  function handleClick(e: React.MouseEvent<HTMLCanvasElement>) {
+    if (!propsRef.current.placementElement) return
+    const grid = screenToGrid(e.clientX, e.clientY)
+    if (!grid) return
+
+    const el = propsRef.current.placementElement
+    const gw = propsRef.current.gridWidth
+    const gh = propsRef.current.gridHeight
+
+    if (
+      grid.x < 0 ||
+      grid.y < 0 ||
+      grid.x + el.width > gw ||
+      grid.y + el.height > gh
+    )
+      return
+
+    onCanvasClick(grid.x, grid.y)
   }
 
   useEffect(() => {
@@ -76,6 +143,7 @@ export default function GameCanvas({
         otherPlayers: others,
         spaceElements: elements,
         moveRejected: rejected,
+        placementElement: placeEl,
       } = propsRef.current
 
       canvas!.width = window.innerWidth
@@ -112,6 +180,7 @@ export default function GameCanvas({
         ctx!.stroke()
       }
 
+      // placed elements
       for (const el of elements) {
         const ex = el.x * TILE_SIZE
         const ey = el.y * TILE_SIZE
@@ -130,6 +199,39 @@ export default function GameCanvas({
         }
       }
 
+      // ghost preview for placement
+      if (placeEl && hoverGrid.current) {
+        const gx = hoverGrid.current.x
+        const gy = hoverGrid.current.y
+        const ew = placeEl.width * TILE_SIZE
+        const eh = placeEl.height * TILE_SIZE
+        const px = gx * TILE_SIZE
+        const py = gy * TILE_SIZE
+
+        const isValid =
+          gx >= 0 &&
+          gy >= 0 &&
+          gx + placeEl.width <= gw &&
+          gy + placeEl.height <= gh
+
+        ctx!.globalAlpha = 0.5
+        const img = getImage(placeEl.imageUrl)
+        if (img) {
+          ctx!.drawImage(img, px, py, ew, eh)
+        } else {
+          ctx!.fillStyle = isValid ? "#10b981" : "#ef4444"
+          ctx!.fillRect(px, py, ew, eh)
+        }
+        ctx!.globalAlpha = 1.0
+
+        ctx!.strokeStyle = isValid ? "#10b981" : "#ef4444"
+        ctx!.lineWidth = 2
+        ctx!.setLineDash([4, 4])
+        ctx!.strokeRect(px, py, ew, eh)
+        ctx!.setLineDash([])
+      }
+
+      // other players
       others.forEach((pos, id) => {
         const px = pos.x * TILE_SIZE
         const py = pos.y * TILE_SIZE
@@ -149,6 +251,7 @@ export default function GameCanvas({
         ctx!.fillText(label, px + TILE_SIZE / 2, py - 2)
       })
 
+      // current player
       {
         const px = my.x * TILE_SIZE
         const py = my.y * TILE_SIZE
@@ -197,7 +300,13 @@ export default function GameCanvas({
     <canvas
       ref={canvasRef}
       className="block h-screen w-screen"
-      style={{ imageRendering: "pixelated" }}
+      style={{
+        imageRendering: "pixelated",
+        cursor: placementElement ? "crosshair" : "default",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     />
   )
 }

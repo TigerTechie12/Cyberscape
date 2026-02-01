@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { getSpace } from "../api"
+import { getSpace, addSpaceElement } from "../api"
 import { useAuth } from "../AuthContext"
 import { useWebSocket } from "../useWebSocket"
-import type { SpaceElement, WsServerMessage } from "../types"
+import type { SpaceElement, Element, WsServerMessage } from "../types"
 import GameCanvas from "../components/GameCanvas"
 import SpaceElementPanel from "../components/SpaceElementPanel"
 
@@ -24,6 +24,9 @@ export default function SpaceView() {
   >(new Map())
   const [joined, setJoined] = useState(false)
   const [moveRejected, setMoveRejected] = useState(false)
+
+  // placement mode
+  const [selectedElement, setSelectedElement] = useState<Element | null>(null)
 
   const myPosRef = useRef(myPosition)
   myPosRef.current = myPosition
@@ -53,6 +56,29 @@ export default function SpaceView() {
     getSpace(spaceId).then((data) => {
       setSpaceElements(data.spaceElements)
     })
+  }
+
+  // ESC to cancel placement
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setSelectedElement(null)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  // canvas click-to-place handler
+  async function handleCanvasPlace(x: number, y: number) {
+    if (!selectedElement || !spaceId) return
+    try {
+      await addSpaceElement(selectedElement.id, spaceId, x, y)
+      setSelectedElement(null)
+      reloadSpace()
+    } catch {
+      alert("Failed to place element.")
+    }
   }
 
   const handleWsMessage = useCallback((msg: WsServerMessage) => {
@@ -186,6 +212,8 @@ export default function SpaceView() {
         otherPlayers={otherPlayers}
         spaceElements={spaceElements}
         moveRejected={moveRejected}
+        placementElement={selectedElement}
+        onCanvasClick={handleCanvasPlace}
       />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-4">
@@ -197,6 +225,11 @@ export default function SpaceView() {
         </button>
 
         <div className="flex items-center gap-2">
+          {selectedElement && (
+            <div className="rounded-lg bg-cyan-900/80 px-3 py-2 text-xs text-cyan-300 backdrop-blur">
+              Placing element &middot; Click on grid &middot; ESC to cancel
+            </div>
+          )}
           <div className="rounded-lg bg-gray-900/80 px-4 py-2 text-sm text-gray-300 backdrop-blur">
             <span className="text-cyan-400">
               ({myPosition.x}, {myPosition.y})
@@ -225,6 +258,8 @@ export default function SpaceView() {
           spaceElements={spaceElements}
           onChanged={reloadSpace}
           onClose={() => setShowElementPanel(false)}
+          selectedElement={selectedElement}
+          onSelectElement={setSelectedElement}
         />
       )}
 

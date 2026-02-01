@@ -61,6 +61,11 @@ export async function getAvatars() {
   return res.data.avatars
 }
 
+export async function getUserAvatar() {
+  const res = await api.get<{ avatars: Avatar[] }>("/user/avatar")
+  return res.data.avatars
+}
+
 export async function getMetadataBulk(ids: string[]) {
   const res = await api.get<{ avatars: AvatarBulkItem[] }>(
     `/metadata/bulk?ids=[${ids.join(",")}]`

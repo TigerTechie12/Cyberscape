@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getAvatars, updateMetadata } from "../api"
+import { getAvatars, getUserAvatar, updateMetadata } from "../api"
 import type { Avatar } from "../types"
 
 export default function AvatarSelector() {
@@ -9,9 +9,12 @@ export default function AvatarSelector() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    getAvatars()
-      .then((data) => {
-        setAvatars(data)
+    Promise.all([getAvatars(), getUserAvatar().catch(() => [])])
+      .then(([allAvatars, userAvatars]) => {
+        setAvatars(allAvatars)
+        if (userAvatars.length > 0) {
+          setSelectedId(userAvatars[0].id)
+        }
       })
       .catch(() => setAvatars([]))
       .finally(() => setLoading(false))

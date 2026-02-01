@@ -17,6 +17,7 @@ export interface Avatar {
 export interface AvatarBulkItem {
   userId: string;
   imageUrl: string | null;
+  name: string | null;
 }
 
 export interface SpaceListItem {
@@ -107,3 +108,8 @@ export type WsServerMessage =
   | WsMovement
   | WsMovementRejected
   | WsUserLeft;
+
+export interface PlacementMode {
+  elementId: string
+  element: Element
+}
