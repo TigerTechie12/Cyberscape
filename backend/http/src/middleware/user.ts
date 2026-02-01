@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import type { Request,Response, NextFunction } from 'express'
 
 export function userMiddleware(req:Request,res:Response,next:NextFunction){
+console.log(">>> userMiddleware hit for:", req.method, req.path)
 const JWT_SECRET:any=process.env.JWT_SECRET
 const authHeader=req.headers.authorization
 if(!authHeader || !authHeader.startsWith('Bearer')){

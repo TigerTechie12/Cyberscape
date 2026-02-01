@@ -5,30 +5,45 @@ import jwt,{type JwtPayload}  from "jsonwebtoken";
 const router=Router()
 
 router.post('/metadata',async(req,res)=>{
+    console.log(">>> HIT /metadata route in userRouter")
     const body=req.body
     const parsedData:any=userMetaData.safeParse(body)
     if(!parsedData.success){
       return  res.status(400).json({message:"Wrong Inputs"})
     }
 
+    const JWT_SECRET:any=process.env.JWT_SECRET
+    const authHeader=req.headers.authorization
+    if(!authHeader || !authHeader.startsWith("Bearer ")){
+        return res.status(401).json({message:"No token provided"})
+    }
+    const token=authHeader.split(" ")[1]
+    if(!token){
+        return res.status(401).json({message:"Token missing"})
+    }
+
     try{
-        const JWT_SECRET:any=process.env.JWT_SECRET
-        const authHeader=req.headers.authorization
-        const token:any=authHeader?.split(" ")[1]
         const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
-        const id:any=decoded.userId
-        const updateData=await client.user.update({where:{id:id},
+        const id=decoded.userId
+        if(!id){
+            return res.status(401).json({message:"Invalid token: no userId"})
+        }
+        await client.user.update({where:{id:id},
             data:{
                 avatarId:parsedData.data.avatarId
             }})
      return   res.status(200).json({Message:"Updated metadata"})
     }
-catch(e){
-   return res.status(403).json({message:"Something went wrong"})
+catch(e:any){
+   console.log("POST /metadata error:", e?.message || e)
+   if(e?.name === 'JsonWebTokenError' || e?.name === 'TokenExpiredError'){
+       return res.status(401).json({message:"Invalid or expired token"})
+   }
+   return res.status(403).json({message: e?.message || "Something went wrong"})
 }
 })
 
-router.get('/avatars',async(req,res)=>{
+router.get('/user/avatar',async(req,res)=>{
 try{
     const JWT_SECRET:any=process.env.JWT_SECRET
     const authHeader=req.headers.authorization
@@ -71,7 +86,8 @@ const userIdString= (req.query.ids ?? "[]") as string
 return res.status(200).json({
     avatars:metaData.map((m)=>({
         userId:m.id,
-        imageUrl:m.avatar?.imageUrl ?? null
+        imageUrl:m.avatar?.imageUrl ?? null,
+        name:m.avatar?.name ?? null
     }))
 })}
   catch(e){return res.status(403).json({message:"Something went wrong"})}

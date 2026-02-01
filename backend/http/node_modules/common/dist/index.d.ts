@@ -12,9 +12,8 @@ export declare const userMetaData: z.ZodObject<{
 }, z.core.$strip>;
 export declare const spaceData: z.ZodObject<{
     name: z.ZodString;
-    height: z.ZodString;
-    width: z.ZodString;
-    mapId: z.ZodString;
+    dimensions: z.ZodString;
+    mapId: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export declare const spaceElements: z.ZodObject<{
     elementId: z.ZodString;

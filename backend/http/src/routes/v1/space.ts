@@ -6,8 +6,7 @@ const router=Router()
 import { userMiddleware } from "../../middleware/user.js";
 import jwt,{type JwtPayload}  from "jsonwebtoken";
 
-router.use(userMiddleware)
-router.post('/space',async(req,res)=>{
+router.post('/space',userMiddleware,async(req,res)=>{
 const body=req.body
 const parsedSpaceData:any=spaceData.safeParse(body)
 if(!parsedSpaceData.success){
@@ -67,7 +66,7 @@ catch(e){return res.status(403).json({message:"Something went wrong"})}
 
 })
 
-router.delete('/space/:spaceId',async(req,res)=>{
+router.delete('/space/:spaceId',userMiddleware,async(req,res)=>{
     const id:any=req.params.spaceId
     try{
 const existence=await client.space.findUnique({where:{id:id},select:{creatorId:true}})
@@ -81,7 +80,7 @@ if(existence.creatorId!==req.userId){ return res.status(403).json({message: "Una
     return    res.status(403).json({message:"Something went wrong"})}
 
 })
-router.get('/space/all',async(req,res)=>{
+router.get('/space/all',userMiddleware,async(req,res)=>{
     try{
         const JWT_SECRET:any=process.env.JWT_SECRET
         const authHeader=req.headers.authorization
@@ -103,7 +102,7 @@ thumbnail:true
  return res.status(403).json({message:"Something went wrong"})
     }
 })
-router.get('/space/:spaceId',async(req,res)=>{
+router.get('/space/:spaceId',userMiddleware,async(req,res)=>{
 
 const id:any=req.params.spaceId
 try{const dbData=await client.space.findUnique({where:{id:id},
@@ -135,7 +134,7 @@ catch(e){
    return res.status(403).json({message:"Something went wrong"})
 }
 })
-router.post('/space/element',async(req,res)=>{
+router.post('/space/element',userMiddleware,async(req,res)=>{
     const body=req.body
     const parsedResult=spaceElements.safeParse(body)
 if(!parsedResult.success){
@@ -174,7 +173,7 @@ if(!parsedResult.success){
 
 
 })
-router.delete('/space/element/:id',async(req,res)=>{
+router.delete('/space/element/:id',userMiddleware,async(req,res)=>{
     const id:any=req.params.id
 try{
 const deleteData=await client.spaceElements.delete({where:{id:id}})
@@ -186,7 +185,7 @@ catch(e){
 }
 })
 
-router.get('/elements',async(req,res)=>{
+router.get('/user/elements',userMiddleware,async(req,res)=>{
     try{
         const JWT_SECRET:any=process.env.JWT_SECRET
         const authHeader=req.headers.authorization

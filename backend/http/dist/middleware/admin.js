@@ -1,8 +1,6 @@
-import express from 'express';
-import { Router } from 'express';
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET;
 export function adminMiddleware(req, res, next) {
+    const JWT_SECRET = process.env.JWT_SECRET;
     const header = req.headers.authorization;
     if (!header || !header.startsWith('Bearer')) {
         return res.status(403).json({ message: "Invalid" });
@@ -13,10 +11,11 @@ export function adminMiddleware(req, res, next) {
     }
     try {
         const decode = jwt.verify(token, JWT_SECRET);
-        if (decode.role !== 'Admin') {
+        if (decode.type !== 'Admin') {
             return res.status(403).json({ message: "Invalid Token" });
         }
-        req.adminId = decode.adminId;
+        req.adminId = decode.username;
+        next();
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });

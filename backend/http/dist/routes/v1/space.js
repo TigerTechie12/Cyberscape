@@ -3,9 +3,8 @@ import { spaceData } from "common";
 import { client } from '@repo/db/client';
 import { spaceElements } from "common";
 const router = Router();
-import { userMiddleware } from "src/middleware/user.js";
+import { userMiddleware } from "../../middleware/user.js";
 import jwt, {} from "jsonwebtoken";
-const JWT_SECRET = process.env.JWT_SECRET;
 router.use(userMiddleware);
 router.post('/space', async (req, res) => {
     const body = req.body;
@@ -68,26 +67,27 @@ router.delete('/space/:spaceId', async (req, res) => {
     try {
         const existence = await client.space.findUnique({ where: { id: id }, select: { creatorId: true } });
         if (!existence) {
-            return res.status(403).json({ message: "Space doesnot exist" });
+            return res.status(403).json({ message: "Space does not exist" });
         }
         if (existence.creatorId !== req.userId) {
-            res.status(403).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Unauthorized" });
         }
-        const dbDataDelete = await client.space.delete({
+        await client.space.delete({
             where: { id: id }
         });
-        return res.status(400).json({ message: 'space deleted' });
+        return res.status(200).json({ message: 'space deleted' });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
 router.get('/space/all', async (req, res) => {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.split("")[1];
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const id = decoded.userId;
     try {
+        const JWT_SECRET = process.env.JWT_SECRET;
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.split(" ")[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const id = decoded.userId;
         const dbData = await client.space.findMany({
             where: { creatorId: id },
             select: {
@@ -157,7 +157,7 @@ router.post('/space/element', async (req, res) => {
         return res.status(400).json({ message: "Space not found" });
     }
     if (parsedResult.data.x < 0 || parsedResult.data.y < 0 || parsedResult.data.x > space.width || parsedResult.data.y > space.height) {
-        return;
+        return res.status(400).json({ message: "Coordinates out of bounds" });
     }
     try {
         const dbData = await client.spaceElements.create({
@@ -177,26 +177,28 @@ router.post('/space/element', async (req, res) => {
 router.delete('/space/element/:id', async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteData = await client.spaceElements.deleteMany({ where: { spaceId: id } });
+        const deleteData = await client.spaceElements.delete({ where: { id: id } });
         return res.status(200).json({ message: "element deleted" });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/elements', async (req, res) => {
+router.get('/user/elements', async (req, res) => {
     try {
+        const JWT_SECRET = process.env.JWT_SECRET;
         const authHeader = req.headers.authorization;
-        const token = authHeader?.split("")[1];
+        const token = authHeader?.split(" ")[1];
         const decoded = jwt.verify(token, JWT_SECRET);
         const id = decoded.userId;
         const elements = await client.element.findMany({
             where: { creatorId: id }
         });
-        return res.json({ elements }).status(200);
+        return res.status(200).json({ elements });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
+export default router;
 //# sourceMappingURL=space.js.map

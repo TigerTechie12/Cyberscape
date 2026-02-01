@@ -9,9 +9,18 @@ import spaceRouter from './routes/v1/space.js'
 const app=express()
 const port=3000
 
-// Middleware MUST come BEFORE routes
-app.use(cors())
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use(express.json())
+
+app.use((req, _res, next) => {
+  console.log(`>>> INCOMING: ${req.method} ${req.url}`)
+  next()
+})
 
 app.use("/api/v1", router)
 app.use("/api/v1", adminRouter)

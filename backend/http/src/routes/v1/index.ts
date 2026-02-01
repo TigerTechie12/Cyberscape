@@ -4,7 +4,6 @@ import {client} from "@repo/db/client"
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 const router=Router()
-const JWT_SECRET:any=process.env.JWT_SECRET
 router.post('/signup',async(req,res)=>{
 const inputs=req.body
 const parsedData=InputModel.safeParse(inputs)
@@ -42,6 +41,7 @@ if(dbFindUser.type!==parsedData.data.type){
 }
 const isValid=await bcrypt.compare(parsedData.data.password,dbFindUser.password)
 if(isValid){
+    const JWT_SECRET:any=process.env.JWT_SECRET
     const token=jwt.sign({username:parsedData.data.username,
         userId:dbFindUser.id,
         type:dbFindUser.type

@@ -3,54 +3,68 @@ import { Router } from "express";
 import { client } from '@repo/db/client';
 import jwt, {} from "jsonwebtoken";
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET;
 router.post('/metadata', async (req, res) => {
+    console.log(">>> HIT /metadata route in userRouter");
     const body = req.body;
     const parsedData = userMetaData.safeParse(body);
     if (!parsedData.success) {
         return res.status(400).json({ message: "Wrong Inputs" });
     }
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "Token missing" });
+    }
     try {
-        const authHeader = req.headers.authorization;
-        const token = authHeader?.split("")[1];
         const decoded = jwt.verify(token, JWT_SECRET);
         const id = decoded.userId;
-        const updateData = await client.user.update({ where: { id: id },
+        if (!id) {
+            return res.status(401).json({ message: "Invalid token: no userId" });
+        }
+        await client.user.update({ where: { id: id },
             data: {
                 avatarId: parsedData.data.avatarId
             } });
-        return res.status(200).json({ Message: "Udpated metadata" });
+        return res.status(200).json({ Message: "Updated metadata" });
+    }
+    catch (e) {
+        console.log("POST /metadata error:", e?.message || e);
+        if (e?.name === 'JsonWebTokenError' || e?.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: "Invalid or expired token" });
+        }
+        return res.status(403).json({ message: e?.message || "Something went wrong" });
+    }
+});
+router.get('/user/avatar', async (req, res) => {
+    try {
+        const JWT_SECRET = process.env.JWT_SECRET;
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.split(" ")[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const id = decoded.userId;
+        const user = await client.user.findUnique({ where: { id: id },
+            select: { avatarId: true }
+        });
+        if (!user || !user.avatarId) {
+            return res.status(200).json({ avatars: [] });
+        }
+        const avatar = await client.avatar.findUnique({
+            where: { id: user.avatarId },
+            select: { id: true, name: true, imageUrl: true }
+        });
+        return res.status(200).json({ avatars: avatar ? [avatar] : [] });
     }
     catch (e) {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/avatars', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        const token = authHeader?.split("")[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
-        const id = decoded.userId;
-        const avatarId = await client.user.findMany({ where: { id: id },
-            select: { avatarId: true }
-        });
-        const avatars = await client.avatar.findMany({
-            where: { id: avatarId.data.avatarId },
-            select: { id: true,
-                name: true,
-                imageUrl: true
-            }
-        });
-        return res.status(200).json({ avatars });
-    }
-    catch (e) {
-        res.status(403).json({ message: "Something went wrong" });
-    }
-});
 router.get('/metadata/bulk', async (req, res) => {
     const userIdString = (req.query.ids ?? "[]");
-    const userIds = (userIdString).slice(1, userIdString?.length - 1).split("");
-    console.log(userIds);
+    const userIds = (userIdString).slice(1, userIdString?.length - 1).split(",");
     try {
         const metaData = await client.user.findMany({
             where: {
@@ -71,7 +85,8 @@ router.get('/metadata/bulk', async (req, res) => {
         });
     }
     catch (e) {
-        res.status(403).json({ message: "Something went wrong" });
+        return res.status(403).json({ message: "Something went wrong" });
     }
 });
+export default router;
 //# sourceMappingURL=user.js.map
