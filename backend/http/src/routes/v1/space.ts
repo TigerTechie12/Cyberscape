@@ -8,9 +8,11 @@ import jwt,{type JwtPayload}  from "jsonwebtoken";
 
 router.post('/space',userMiddleware,async(req,res)=>{
 const body=req.body
+console.log(">>> POST /space body:", JSON.stringify(body))
 const parsedSpaceData:any=spaceData.safeParse(body)
+console.log(">>> Parse result:", parsedSpaceData.success, parsedSpaceData.error?.issues)
 if(!parsedSpaceData.success){
- return   res.status(400).json({message:"Invalid Inputs"})
+ return   res.status(400).json({message:"Invalid Inputs", errors: parsedSpaceData.error?.issues})
 }
 try{
     if(!parsedSpaceData.data.mapId){

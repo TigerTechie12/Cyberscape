@@ -1,6 +1,8 @@
 import type { OutgoingMessage } from './types.js';
 type UserType = {
     id: string;
+    x: number;
+    y: number;
     send: (message: OutgoingMessage) => void;
 };
 declare function addUser(spaceId: string, user: UserType): void;

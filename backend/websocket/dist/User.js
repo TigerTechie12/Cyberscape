@@ -28,9 +28,9 @@ export function createUser(ws) {
         y,
         send,
         destroy: () => {
-            if (spaceId) {
-                RoomManager.broadcast(spaceId, id, { type: "user-left", payload: { odunId } });
-                RoomManager.removeUser(spaceId, id);
+            if (user.spaceId) {
+                RoomManager.broadcast(user.spaceId, id, { type: "user-left", payload: { odunId: user.odunId } });
+                RoomManager.removeUser(user.spaceId, id);
             }
         }
     };
@@ -48,11 +48,11 @@ export function createUser(ws) {
     async function handleJoin(payload) {
         try {
             const decoded = jwt.verify(payload.token, JWT_PASSWORD);
-            if (!decoded.odunId) {
+            if (!decoded.userId) {
                 ws.close();
                 return;
             }
-            odunId = decoded.odunId;
+            odunId = decoded.userId;
             user.odunId = odunId;
         }
         catch (error) {
@@ -79,7 +79,7 @@ export function createUser(ws) {
                 spawn: { x, y },
                 users: RoomManager.getUsersInRoom(spaceId)
                     .filter(u => u.id !== id)
-                    .map(u => ({ id: u.id }))
+                    .map(u => ({ id: u.id, x: u.x, y: u.y }))
             }
         });
         RoomManager.broadcast(spaceId, id, {
