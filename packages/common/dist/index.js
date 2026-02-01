@@ -6,9 +6,8 @@ export const InputModel = z.object({
 });
 export const userMetaData = z.object({ avatarId: z.string() });
 export const spaceData = z.object({ name: z.string(),
-    height: z.string(),
-    width: z.string(),
-    mapId: z.string()
+    dimensions: z.string(),
+    mapId: z.string().optional()
 });
 export const spaceElements = z.object({
     elementId: z.string(),
