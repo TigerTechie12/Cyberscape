@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "cd ../../packages/db && npm install && npx prisma generate && npm run build",
+    "prebuild": "npm install --prefix ../../packages/db && npm run db:generate --prefix ../../packages/db && npm run build --prefix ../../packages/db",
     "build": "tsc -b",
     "start": "node dist/index.js",
     "dev": "nodemon --exec tsx src/index.ts"
