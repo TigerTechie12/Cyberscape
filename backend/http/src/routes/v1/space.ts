@@ -193,7 +193,7 @@ router.get('/user/elements',userMiddleware,async(req,res)=>{
         const authHeader=req.headers.authorization
         const token:any=authHeader?.split(" ")[1]
         const decoded=jwt.verify(token,JWT_SECRET) as JwtPayload
-        const id:any=decoded.userId
+        const id:string | null=decoded.userId
 const elements=await client.element.findMany({
     where:{creatorId:id}
 })
