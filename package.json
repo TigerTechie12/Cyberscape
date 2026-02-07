@@ -1,0 +1,14 @@
+{
+  "name": "cyberscape-root",
+  "private": true,
+  "workspaces": [
+    "backend/http",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "echo 'Building...'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
