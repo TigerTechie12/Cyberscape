@@ -7,6 +7,7 @@ interface GameCanvasProps {
   gridWidth: number
   gridHeight: number
   myPosition: { x: number; y: number }
+  myAvatarUrl: string | null
   otherPlayers: Map<string, { x: number; y: number }>
   spaceElements: SpaceElement[]
   moveRejected?: boolean
@@ -27,6 +28,7 @@ export default function GameCanvas({
   gridWidth,
   gridHeight,
   myPosition,
+  myAvatarUrl,
   otherPlayers,
   spaceElements,
   moveRejected = false,
@@ -42,6 +44,7 @@ export default function GameCanvas({
     gridWidth,
     gridHeight,
     myPosition,
+    myAvatarUrl,
     otherPlayers,
     spaceElements,
     moveRejected,
@@ -51,6 +54,7 @@ export default function GameCanvas({
     gridWidth,
     gridHeight,
     myPosition,
+    myAvatarUrl,
     otherPlayers,
     spaceElements,
     moveRejected,
@@ -140,6 +144,7 @@ export default function GameCanvas({
         gridWidth: gw,
         gridHeight: gh,
         myPosition: my,
+        myAvatarUrl: avatarUrl,
         otherPlayers: others,
         spaceElements: elements,
         moveRejected: rejected,
@@ -180,7 +185,6 @@ export default function GameCanvas({
         ctx!.stroke()
       }
 
-      // placed elements
       for (const el of elements) {
         const ex = el.x * TILE_SIZE
         const ey = el.y * TILE_SIZE
@@ -199,7 +203,6 @@ export default function GameCanvas({
         }
       }
 
-      // ghost preview for placement
       if (placeEl && hoverGrid.current) {
         const gx = hoverGrid.current.x
         const gy = hoverGrid.current.y
@@ -231,7 +234,6 @@ export default function GameCanvas({
         ctx!.setLineDash([])
       }
 
-      // other players
       others.forEach((pos, id) => {
         const px = pos.x * TILE_SIZE
         const py = pos.y * TILE_SIZE
@@ -251,22 +253,20 @@ export default function GameCanvas({
         ctx!.fillText(label, px + TILE_SIZE / 2, py - 2)
       })
 
-      // current player
       {
         const px = my.x * TILE_SIZE
         const py = my.y * TILE_SIZE
+        const avatarImg = avatarUrl ? getImage(avatarUrl) : null
 
-        if (rejected) {
-          ctx!.shadowColor = "#ef4444"
-          ctx!.shadowBlur = 16
-          ctx!.fillStyle = "#ef4444"
+        ctx!.shadowColor = rejected ? "#ef4444" : "#10b981"
+        ctx!.shadowBlur = rejected ? 16 : 10
+
+        if (avatarImg) {
+          ctx!.drawImage(avatarImg, px + 2, py + 2, TILE_SIZE - 4, TILE_SIZE - 4)
         } else {
-          ctx!.shadowColor = "#10b981"
-          ctx!.shadowBlur = 10
-          ctx!.fillStyle = "#10b981"
+          ctx!.fillStyle = rejected ? "#ef4444" : "#10b981"
+          ctx!.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6)
         }
-
-        ctx!.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6)
 
         ctx!.shadowBlur = 0
 

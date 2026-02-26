@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { getSpace, addSpaceElement } from "../api"
+import { getSpace, addSpaceElement, getUserAvatar } from "../api"
 import { useAuth } from "../AuthContext"
 import { useWebSocket } from "../useWebSocket"
 import type { SpaceElement, Element, WsServerMessage } from "../types"
@@ -18,6 +18,7 @@ export default function SpaceView() {
   const [spaceLoaded, setSpaceLoaded] = useState(false)
   const [showElementPanel, setShowElementPanel] = useState(false)
 
+  const [myAvatarUrl, setMyAvatarUrl] = useState<string | null>(null)
   const [myPosition, setMyPosition] = useState({ x: 0, y: 0 })
   const [otherPlayers, setOtherPlayers] = useState<
     Map<string, { x: number, y: number }>
@@ -25,7 +26,6 @@ export default function SpaceView() {
   const [joined, setJoined] = useState(false)
   const [moveRejected, setMoveRejected] = useState(false)
 
-  // placement mode
   const [selectedElement, setSelectedElement] = useState<Element | null>(null)
 
   const myPosRef = useRef(myPosition)
@@ -34,6 +34,12 @@ export default function SpaceView() {
   joinedRef.current = joined
   const gridRef = useRef({ w: gridWidth, h: gridHeight })
   gridRef.current = { w: gridWidth, h: gridHeight }
+
+  useEffect(() => {
+    getUserAvatar().then((avatars) => {
+      if (avatars[0]?.imageUrl) setMyAvatarUrl(avatars[0].imageUrl)
+    }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!spaceId) return
@@ -58,7 +64,6 @@ export default function SpaceView() {
     })
   }
 
-  // ESC to cancel placement
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -69,7 +74,6 @@ export default function SpaceView() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
 
-  // canvas click-to-place handler
   async function handleCanvasPlace(x: number, y: number) {
     if (!selectedElement || !spaceId) return
     try {
@@ -209,6 +213,7 @@ export default function SpaceView() {
         gridWidth={gridWidth}
         gridHeight={gridHeight}
         myPosition={myPosition}
+        myAvatarUrl={myAvatarUrl}
         otherPlayers={otherPlayers}
         spaceElements={spaceElements}
         moveRejected={moveRejected}
