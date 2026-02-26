@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { adminCreateMap, getMaps } from "../api"
-import type { MapItem } from "../types"
+import { adminCreateMap, getMaps, getElements } from "../api"
+import type { MapItem, Element } from "../types"
 
 interface DefaultElement {
   elementId: string
@@ -10,6 +10,7 @@ interface DefaultElement {
 
 export default function AdminMaps() {
   const [maps, setMaps] = useState<MapItem[]>([])
+  const [availableElements, setAvailableElements] = useState<Element[]>([])
   const [loading, setLoading] = useState(true)
 
   const [name, setName] = useState("")
@@ -33,6 +34,7 @@ export default function AdminMaps() {
 
   useEffect(() => {
     fetchMaps()
+    getElements().then(setAvailableElements).catch(() => {})
   }, [])
 
   function addElement() {
@@ -151,6 +153,16 @@ export default function AdminMaps() {
               </button>
             </div>
 
+            <datalist id="elements-datalist">
+              {availableElements.map((el) => (
+                <option
+                  key={el.id}
+                  value={el.id}
+                  label={`${el.width}×${el.height}${el.static ? " · static" : ""}`}
+                />
+              ))}
+            </datalist>
+
             {elements.length === 0 ? (
               <p className="text-sm text-gray-500">
                 No default elements. Click "Add Element" to start.
@@ -163,7 +175,8 @@ export default function AdminMaps() {
                     className="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 p-2"
                   >
                     <input
-                      placeholder="Element ID"
+                      list="elements-datalist"
+                      placeholder="Search element…"
                       value={el.elementId}
                       onChange={(e) =>
                         updateElement(i, "elementId", e.target.value)
