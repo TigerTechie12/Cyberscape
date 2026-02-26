@@ -109,6 +109,9 @@ export default function Signup() {
             Sign in
           </Link>
         </p>
+          <Link to='/instructions' className="text-cyan-400 hover:underline">
+            Instructions
+          </Link>
       </div>
     </div>
   )

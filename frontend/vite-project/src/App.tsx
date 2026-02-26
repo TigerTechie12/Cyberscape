@@ -6,6 +6,7 @@ import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import AdminPanel from './pages/AdminPanel'
 import SpaceView from './pages/SpaceView'
+import Instructions from './pages/Instructions'
 import { ProtectedRoute } from './ProtectedRoute'
 
 function App() {
@@ -16,7 +17,10 @@ function App() {
       <Route path="/" element={<Login />} />
        <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+<Routes>
+  <Route path='/instructions' element={<Instructions />} />
 
+</Routes>
       <Route element={<ProtectedRoute userOnly />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/space/:spaceId" element={<SpaceView />} />
