@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import type { WsClientMessage, WsServerMessage } from "./types";
 
-const WS_URL ="https://cyberscape-1.onrender.com"
+const WS_URL ="wss://cyberscape-1.onrender.com"
 
 export function useWebSocket(
   onMessage: (msg: WsServerMessage) => void,

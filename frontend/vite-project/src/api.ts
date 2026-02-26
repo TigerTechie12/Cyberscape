@@ -10,7 +10,7 @@ import type {
   MapItem,
 } from "./types";
 
-const API_BASE = "https://cyberscape.onrender.com"
+const API_BASE = "https://cyberscape.onrender.com/api/v1"
 
 const api = axios.create({ baseURL: API_BASE });
 
