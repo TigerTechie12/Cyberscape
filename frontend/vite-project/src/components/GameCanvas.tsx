@@ -12,6 +12,7 @@ interface GameCanvasProps {
   spaceElements: SpaceElement[]
   moveRejected?: boolean
   placementElement: Element | null
+  mapImageUrl: string | null
   onCanvasClick: (x: number, y: number) => void
 }
 
@@ -33,6 +34,7 @@ export default function GameCanvas({
   spaceElements,
   moveRejected = false,
   placementElement,
+  mapImageUrl,
   onCanvasClick,
 }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -49,6 +51,7 @@ export default function GameCanvas({
     spaceElements,
     moveRejected,
     placementElement,
+    mapImageUrl,
   })
   propsRef.current = {
     gridWidth,
@@ -59,6 +62,7 @@ export default function GameCanvas({
     spaceElements,
     moveRejected,
     placementElement,
+    mapImageUrl,
   }
 
   function getImage(url: string): HTMLImageElement | null {
@@ -149,6 +153,7 @@ export default function GameCanvas({
         spaceElements: elements,
         moveRejected: rejected,
         placementElement: placeEl,
+        mapImageUrl: mapUrl,
       } = propsRef.current
 
       canvas!.width = window.innerWidth
@@ -167,8 +172,13 @@ export default function GameCanvas({
       ctx!.save()
       ctx!.translate(-camX, -camY)
 
-      ctx!.fillStyle = "#1a1a2e"
-      ctx!.fillRect(0, 0, gw * TILE_SIZE, gh * TILE_SIZE)
+      const mapImg = mapUrl ? getImage(mapUrl) : null
+      if (mapImg) {
+        ctx!.drawImage(mapImg, 0, 0, gw * TILE_SIZE, gh * TILE_SIZE)
+      } else {
+        ctx!.fillStyle = "#1a1a2e"
+        ctx!.fillRect(0, 0, gw * TILE_SIZE, gh * TILE_SIZE)
+      }
 
       ctx!.strokeStyle = "#2a2a4e"
       ctx!.lineWidth = 0.5

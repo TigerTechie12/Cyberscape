@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import type { WsClientMessage, WsServerMessage } from "./types";
 
 const WS_URL ="wss://cyberscape-1.onrender.com"
@@ -10,6 +10,7 @@ export function useWebSocket(
   const wsRef = useRef<WebSocket | null>(null)
   const onMessageRef = useRef(onMessage)
   onMessageRef.current = onMessage
+  const [connected, setConnected] = useState(false)
 
   useEffect(() => {
     if (!enabled) return
@@ -19,6 +20,7 @@ export function useWebSocket(
 
     ws.onopen = () => {
       console.log("[WS] connected")
+      setConnected(true)
     }
 
     ws.onmessage = (event) => {
@@ -36,11 +38,13 @@ export function useWebSocket(
 
     ws.onclose = () => {
       console.log("[WS] disconnected")
+      setConnected(false)
     }
 
     return () => {
       ws.close()
       wsRef.current = null
+      setConnected(false)
     }
   }, [enabled])
 
@@ -50,5 +54,5 @@ export function useWebSocket(
     }
   }, [])
 
-  return { send }
+  return { send, connected }
 }

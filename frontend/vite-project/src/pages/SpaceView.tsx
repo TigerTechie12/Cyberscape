@@ -15,6 +15,7 @@ export default function SpaceView() {
   const [gridWidth, setGridWidth] = useState(0)
   const [gridHeight, setGridHeight] = useState(0)
   const [spaceElements, setSpaceElements] = useState<SpaceElement[]>([])
+  const [mapImageUrl, setMapImageUrl] = useState<string | null>(null)
   const [spaceLoaded, setSpaceLoaded] = useState(false)
   const [showElementPanel, setShowElementPanel] = useState(false)
 
@@ -49,6 +50,7 @@ export default function SpaceView() {
         setGridHeight(parseInt(parts[0], 10))
         setGridWidth(parseInt(parts[1], 10))
         setSpaceElements(data.spaceElements)
+        setMapImageUrl(data.thumbnail)
         setSpaceLoaded(true)
       })
       .catch(() => {
@@ -140,18 +142,15 @@ export default function SpaceView() {
     }
   }, [])
 
-  const { send } = useWebSocket(handleWsMessage, spaceLoaded)
+  const { send, connected } = useWebSocket(handleWsMessage, spaceLoaded)
 
   const hasSentJoin = useRef(false)
   useEffect(() => {
-    if (spaceLoaded && spaceId && token && !hasSentJoin.current) {
-      const timer = setTimeout(() => {
-        send({ type: "join", payload: { spaceId, token } })
-        hasSentJoin.current = true
-      }, 300)
-      return () => clearTimeout(timer)
+    if (spaceLoaded && spaceId && token && connected && !hasSentJoin.current) {
+      send({ type: "join", payload: { spaceId, token } })
+      hasSentJoin.current = true
     }
-  }, [spaceLoaded, spaceId, token, send])
+  }, [spaceLoaded, spaceId, token, connected, send])
 
 
   const sendRef = useRef(send)
@@ -218,6 +217,7 @@ export default function SpaceView() {
         spaceElements={spaceElements}
         moveRejected={moveRejected}
         placementElement={selectedElement}
+        mapImageUrl={mapImageUrl}
         onCanvasClick={handleCanvasPlace}
       />
 

@@ -43,6 +43,7 @@ export interface SpaceElement {
 
 export interface SpaceDetail {
   dimensions: string;
+  thumbnail: string | null;
   spaceElements: SpaceElement[];
 }
 
