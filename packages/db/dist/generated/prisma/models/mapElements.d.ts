@@ -150,8 +150,8 @@ export type mapElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 };
 export type MapElementsGroupByOutputType = {
     id: string;
-    mapId: string;
-    elementId: string;
+    mapId: string | null;
+    elementId: string | null;
     x: number | null;
     y: number | null;
     _count: MapElementsCountAggregateOutputType | null;
@@ -168,17 +168,17 @@ export type mapElementsWhereInput = {
     OR?: Prisma.mapElementsWhereInput[];
     NOT?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[];
     id?: Prisma.StringFilter<"mapElements"> | string;
-    mapId?: Prisma.StringFilter<"mapElements"> | string;
-    elementId?: Prisma.StringFilter<"mapElements"> | string;
+    mapId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
+    elementId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
     x?: Prisma.IntNullableFilter<"mapElements"> | number | null;
     y?: Prisma.IntNullableFilter<"mapElements"> | number | null;
-    map?: Prisma.XOR<Prisma.MapsScalarRelationFilter, Prisma.MapsWhereInput>;
-    element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>;
+    map?: Prisma.XOR<Prisma.MapsNullableScalarRelationFilter, Prisma.MapsWhereInput> | null;
+    element?: Prisma.XOR<Prisma.ElementNullableScalarRelationFilter, Prisma.ElementWhereInput> | null;
 };
 export type mapElementsOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
-    mapId?: Prisma.SortOrder;
-    elementId?: Prisma.SortOrder;
+    mapId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    elementId?: Prisma.SortOrderInput | Prisma.SortOrder;
     x?: Prisma.SortOrderInput | Prisma.SortOrder;
     y?: Prisma.SortOrderInput | Prisma.SortOrder;
     map?: Prisma.MapsOrderByWithRelationInput;
@@ -189,17 +189,17 @@ export type mapElementsWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[];
     OR?: Prisma.mapElementsWhereInput[];
     NOT?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[];
-    mapId?: Prisma.StringFilter<"mapElements"> | string;
-    elementId?: Prisma.StringFilter<"mapElements"> | string;
+    mapId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
+    elementId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
     x?: Prisma.IntNullableFilter<"mapElements"> | number | null;
     y?: Prisma.IntNullableFilter<"mapElements"> | number | null;
-    map?: Prisma.XOR<Prisma.MapsScalarRelationFilter, Prisma.MapsWhereInput>;
-    element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>;
+    map?: Prisma.XOR<Prisma.MapsNullableScalarRelationFilter, Prisma.MapsWhereInput> | null;
+    element?: Prisma.XOR<Prisma.ElementNullableScalarRelationFilter, Prisma.ElementWhereInput> | null;
 }, "id" | "id">;
 export type mapElementsOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
-    mapId?: Prisma.SortOrder;
-    elementId?: Prisma.SortOrder;
+    mapId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    elementId?: Prisma.SortOrderInput | Prisma.SortOrder;
     x?: Prisma.SortOrderInput | Prisma.SortOrder;
     y?: Prisma.SortOrderInput | Prisma.SortOrder;
     _count?: Prisma.mapElementsCountOrderByAggregateInput;
@@ -213,8 +213,8 @@ export type mapElementsScalarWhereWithAggregatesInput = {
     OR?: Prisma.mapElementsScalarWhereWithAggregatesInput[];
     NOT?: Prisma.mapElementsScalarWhereWithAggregatesInput | Prisma.mapElementsScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"mapElements"> | string;
-    mapId?: Prisma.StringWithAggregatesFilter<"mapElements"> | string;
-    elementId?: Prisma.StringWithAggregatesFilter<"mapElements"> | string;
+    mapId?: Prisma.StringNullableWithAggregatesFilter<"mapElements"> | string | null;
+    elementId?: Prisma.StringNullableWithAggregatesFilter<"mapElements"> | string | null;
     x?: Prisma.IntNullableWithAggregatesFilter<"mapElements"> | number | null;
     y?: Prisma.IntNullableWithAggregatesFilter<"mapElements"> | number | null;
 };
@@ -222,13 +222,13 @@ export type mapElementsCreateInput = {
     id?: string;
     x?: number | null;
     y?: number | null;
-    map: Prisma.MapsCreateNestedOneWithoutMapElementsInput;
-    element: Prisma.ElementCreateNestedOneWithoutMapElementsInput;
+    map?: Prisma.MapsCreateNestedOneWithoutMapElementsInput;
+    element?: Prisma.ElementCreateNestedOneWithoutMapElementsInput;
 };
 export type mapElementsUncheckedCreateInput = {
     id?: string;
-    mapId: string;
-    elementId: string;
+    mapId?: string | null;
+    elementId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -236,20 +236,20 @@ export type mapElementsUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
-    map?: Prisma.MapsUpdateOneRequiredWithoutMapElementsNestedInput;
-    element?: Prisma.ElementUpdateOneRequiredWithoutMapElementsNestedInput;
+    map?: Prisma.MapsUpdateOneWithoutMapElementsNestedInput;
+    element?: Prisma.ElementUpdateOneWithoutMapElementsNestedInput;
 };
 export type mapElementsUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    mapId?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    mapId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
 export type mapElementsCreateManyInput = {
     id?: string;
-    mapId: string;
-    elementId: string;
+    mapId?: string | null;
+    elementId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -260,8 +260,8 @@ export type mapElementsUpdateManyMutationInput = {
 };
 export type mapElementsUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    mapId?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    mapId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
@@ -389,11 +389,11 @@ export type mapElementsCreateWithoutElementInput = {
     id?: string;
     x?: number | null;
     y?: number | null;
-    map: Prisma.MapsCreateNestedOneWithoutMapElementsInput;
+    map?: Prisma.MapsCreateNestedOneWithoutMapElementsInput;
 };
 export type mapElementsUncheckedCreateWithoutElementInput = {
     id?: string;
-    mapId: string;
+    mapId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -423,8 +423,8 @@ export type mapElementsScalarWhereInput = {
     OR?: Prisma.mapElementsScalarWhereInput[];
     NOT?: Prisma.mapElementsScalarWhereInput | Prisma.mapElementsScalarWhereInput[];
     id?: Prisma.StringFilter<"mapElements"> | string;
-    mapId?: Prisma.StringFilter<"mapElements"> | string;
-    elementId?: Prisma.StringFilter<"mapElements"> | string;
+    mapId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
+    elementId?: Prisma.StringNullableFilter<"mapElements"> | string | null;
     x?: Prisma.IntNullableFilter<"mapElements"> | number | null;
     y?: Prisma.IntNullableFilter<"mapElements"> | number | null;
 };
@@ -432,11 +432,11 @@ export type mapElementsCreateWithoutMapInput = {
     id?: string;
     x?: number | null;
     y?: number | null;
-    element: Prisma.ElementCreateNestedOneWithoutMapElementsInput;
+    element?: Prisma.ElementCreateNestedOneWithoutMapElementsInput;
 };
 export type mapElementsUncheckedCreateWithoutMapInput = {
     id?: string;
-    elementId: string;
+    elementId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -463,7 +463,7 @@ export type mapElementsUpdateManyWithWhereWithoutMapInput = {
 };
 export type mapElementsCreateManyElementInput = {
     id?: string;
-    mapId: string;
+    mapId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -471,23 +471,23 @@ export type mapElementsUpdateWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
-    map?: Prisma.MapsUpdateOneRequiredWithoutMapElementsNestedInput;
+    map?: Prisma.MapsUpdateOneWithoutMapElementsNestedInput;
 };
 export type mapElementsUncheckedUpdateWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    mapId?: Prisma.StringFieldUpdateOperationsInput | string;
+    mapId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
 export type mapElementsUncheckedUpdateManyWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    mapId?: Prisma.StringFieldUpdateOperationsInput | string;
+    mapId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
 export type mapElementsCreateManyMapInput = {
     id?: string;
-    elementId: string;
+    elementId?: string | null;
     x?: number | null;
     y?: number | null;
 };
@@ -495,17 +495,17 @@ export type mapElementsUpdateWithoutMapInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
-    element?: Prisma.ElementUpdateOneRequiredWithoutMapElementsNestedInput;
+    element?: Prisma.ElementUpdateOneWithoutMapElementsNestedInput;
 };
 export type mapElementsUncheckedUpdateWithoutMapInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
 export type mapElementsUncheckedUpdateManyWithoutMapInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
 };
@@ -515,8 +515,8 @@ export type mapElementsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
     elementId?: boolean;
     x?: boolean;
     y?: boolean;
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["mapElements"]>;
 export type mapElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -524,8 +524,8 @@ export type mapElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
     elementId?: boolean;
     x?: boolean;
     y?: boolean;
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["mapElements"]>;
 export type mapElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -533,8 +533,8 @@ export type mapElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
     elementId?: boolean;
     x?: boolean;
     y?: boolean;
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["mapElements"]>;
 export type mapElementsSelectScalar = {
     id?: boolean;
@@ -545,27 +545,27 @@ export type mapElementsSelectScalar = {
 };
 export type mapElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mapId" | "elementId" | "x" | "y", ExtArgs["result"]["mapElements"]>;
 export type mapElementsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 };
 export type mapElementsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 };
 export type mapElementsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    map?: boolean | Prisma.MapsDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    map?: boolean | Prisma.mapElements$mapArgs<ExtArgs>;
+    element?: boolean | Prisma.mapElements$elementArgs<ExtArgs>;
 };
 export type $mapElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "mapElements";
     objects: {
-        map: Prisma.$MapsPayload<ExtArgs>;
-        element: Prisma.$ElementPayload<ExtArgs>;
+        map: Prisma.$MapsPayload<ExtArgs> | null;
+        element: Prisma.$ElementPayload<ExtArgs> | null;
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
-        mapId: string;
-        elementId: string;
+        mapId: string | null;
+        elementId: string | null;
         x: number | null;
         y: number | null;
     }, ExtArgs["result"]["mapElements"]>;
@@ -897,8 +897,8 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
  */
 export interface Prisma__mapElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
-    map<T extends Prisma.MapsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MapsDefaultArgs<ExtArgs>>): Prisma.Prisma__MapsClient<runtime.Types.Result.GetResult<Prisma.$MapsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
-    element<T extends Prisma.ElementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ElementDefaultArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    map<T extends Prisma.mapElements$mapArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.mapElements$mapArgs<ExtArgs>>): Prisma.Prisma__MapsClient<runtime.Types.Result.GetResult<Prisma.$MapsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    element<T extends Prisma.mapElements$elementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.mapElements$elementArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1139,7 +1139,7 @@ export type mapElementsCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
     /**
      * The data needed to create a mapElements.
      */
-    data: Prisma.XOR<Prisma.mapElementsCreateInput, Prisma.mapElementsUncheckedCreateInput>;
+    data?: Prisma.XOR<Prisma.mapElementsCreateInput, Prisma.mapElementsUncheckedCreateInput>;
 };
 /**
  * mapElements createMany
@@ -1306,6 +1306,42 @@ export type mapElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
      * Limit how many mapElements to delete.
      */
     limit?: number;
+};
+/**
+ * mapElements.map
+ */
+export type mapElements$mapArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Maps
+     */
+    select?: Prisma.MapsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Maps
+     */
+    omit?: Prisma.MapsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.MapsInclude<ExtArgs> | null;
+    where?: Prisma.MapsWhereInput;
+};
+/**
+ * mapElements.element
+ */
+export type mapElements$elementArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Element
+     */
+    select?: Prisma.ElementSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Element
+     */
+    omit?: Prisma.ElementOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ElementInclude<ExtArgs> | null;
+    where?: Prisma.ElementWhereInput;
 };
 /**
  * mapElements without action

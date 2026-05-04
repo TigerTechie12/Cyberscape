@@ -150,8 +150,8 @@ export type spaceElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 };
 export type SpaceElementsGroupByOutputType = {
     id: string;
-    elementId: string;
-    spaceId: string;
+    elementId: string | null;
+    spaceId: string | null;
     x: number;
     y: number;
     _count: SpaceElementsCountAggregateOutputType | null;
@@ -168,17 +168,17 @@ export type spaceElementsWhereInput = {
     OR?: Prisma.spaceElementsWhereInput[];
     NOT?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[];
     id?: Prisma.StringFilter<"spaceElements"> | string;
-    elementId?: Prisma.StringFilter<"spaceElements"> | string;
-    spaceId?: Prisma.StringFilter<"spaceElements"> | string;
+    elementId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
+    spaceId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
     x?: Prisma.IntFilter<"spaceElements"> | number;
     y?: Prisma.IntFilter<"spaceElements"> | number;
-    space?: Prisma.XOR<Prisma.SpaceScalarRelationFilter, Prisma.SpaceWhereInput>;
-    element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>;
+    space?: Prisma.XOR<Prisma.SpaceNullableScalarRelationFilter, Prisma.SpaceWhereInput> | null;
+    element?: Prisma.XOR<Prisma.ElementNullableScalarRelationFilter, Prisma.ElementWhereInput> | null;
 };
 export type spaceElementsOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
-    elementId?: Prisma.SortOrder;
-    spaceId?: Prisma.SortOrder;
+    elementId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    spaceId?: Prisma.SortOrderInput | Prisma.SortOrder;
     x?: Prisma.SortOrder;
     y?: Prisma.SortOrder;
     space?: Prisma.SpaceOrderByWithRelationInput;
@@ -189,17 +189,17 @@ export type spaceElementsWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[];
     OR?: Prisma.spaceElementsWhereInput[];
     NOT?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[];
-    elementId?: Prisma.StringFilter<"spaceElements"> | string;
-    spaceId?: Prisma.StringFilter<"spaceElements"> | string;
+    elementId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
+    spaceId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
     x?: Prisma.IntFilter<"spaceElements"> | number;
     y?: Prisma.IntFilter<"spaceElements"> | number;
-    space?: Prisma.XOR<Prisma.SpaceScalarRelationFilter, Prisma.SpaceWhereInput>;
-    element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>;
+    space?: Prisma.XOR<Prisma.SpaceNullableScalarRelationFilter, Prisma.SpaceWhereInput> | null;
+    element?: Prisma.XOR<Prisma.ElementNullableScalarRelationFilter, Prisma.ElementWhereInput> | null;
 }, "id" | "id">;
 export type spaceElementsOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
-    elementId?: Prisma.SortOrder;
-    spaceId?: Prisma.SortOrder;
+    elementId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    spaceId?: Prisma.SortOrderInput | Prisma.SortOrder;
     x?: Prisma.SortOrder;
     y?: Prisma.SortOrder;
     _count?: Prisma.spaceElementsCountOrderByAggregateInput;
@@ -213,8 +213,8 @@ export type spaceElementsScalarWhereWithAggregatesInput = {
     OR?: Prisma.spaceElementsScalarWhereWithAggregatesInput[];
     NOT?: Prisma.spaceElementsScalarWhereWithAggregatesInput | Prisma.spaceElementsScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string;
-    elementId?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string;
-    spaceId?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string;
+    elementId?: Prisma.StringNullableWithAggregatesFilter<"spaceElements"> | string | null;
+    spaceId?: Prisma.StringNullableWithAggregatesFilter<"spaceElements"> | string | null;
     x?: Prisma.IntWithAggregatesFilter<"spaceElements"> | number;
     y?: Prisma.IntWithAggregatesFilter<"spaceElements"> | number;
 };
@@ -222,13 +222,13 @@ export type spaceElementsCreateInput = {
     id?: string;
     x: number;
     y: number;
-    space: Prisma.SpaceCreateNestedOneWithoutSpaceElementsInput;
-    element: Prisma.ElementCreateNestedOneWithoutSpaceElementsInput;
+    space?: Prisma.SpaceCreateNestedOneWithoutSpaceElementsInput;
+    element?: Prisma.ElementCreateNestedOneWithoutSpaceElementsInput;
 };
 export type spaceElementsUncheckedCreateInput = {
     id?: string;
-    elementId: string;
-    spaceId: string;
+    elementId?: string | null;
+    spaceId?: string | null;
     x: number;
     y: number;
 };
@@ -236,20 +236,20 @@ export type spaceElementsUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
-    space?: Prisma.SpaceUpdateOneRequiredWithoutSpaceElementsNestedInput;
-    element?: Prisma.ElementUpdateOneRequiredWithoutSpaceElementsNestedInput;
+    space?: Prisma.SpaceUpdateOneWithoutSpaceElementsNestedInput;
+    element?: Prisma.ElementUpdateOneWithoutSpaceElementsNestedInput;
 };
 export type spaceElementsUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
-    spaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    spaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 export type spaceElementsCreateManyInput = {
     id?: string;
-    elementId: string;
-    spaceId: string;
+    elementId?: string | null;
+    spaceId?: string | null;
     x: number;
     y: number;
 };
@@ -260,8 +260,8 @@ export type spaceElementsUpdateManyMutationInput = {
 };
 export type spaceElementsUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
-    spaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    spaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
@@ -382,11 +382,11 @@ export type spaceElementsCreateWithoutSpaceInput = {
     id?: string;
     x: number;
     y: number;
-    element: Prisma.ElementCreateNestedOneWithoutSpaceElementsInput;
+    element?: Prisma.ElementCreateNestedOneWithoutSpaceElementsInput;
 };
 export type spaceElementsUncheckedCreateWithoutSpaceInput = {
     id?: string;
-    elementId: string;
+    elementId?: string | null;
     x: number;
     y: number;
 };
@@ -416,8 +416,8 @@ export type spaceElementsScalarWhereInput = {
     OR?: Prisma.spaceElementsScalarWhereInput[];
     NOT?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[];
     id?: Prisma.StringFilter<"spaceElements"> | string;
-    elementId?: Prisma.StringFilter<"spaceElements"> | string;
-    spaceId?: Prisma.StringFilter<"spaceElements"> | string;
+    elementId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
+    spaceId?: Prisma.StringNullableFilter<"spaceElements"> | string | null;
     x?: Prisma.IntFilter<"spaceElements"> | number;
     y?: Prisma.IntFilter<"spaceElements"> | number;
 };
@@ -425,11 +425,11 @@ export type spaceElementsCreateWithoutElementInput = {
     id?: string;
     x: number;
     y: number;
-    space: Prisma.SpaceCreateNestedOneWithoutSpaceElementsInput;
+    space?: Prisma.SpaceCreateNestedOneWithoutSpaceElementsInput;
 };
 export type spaceElementsUncheckedCreateWithoutElementInput = {
     id?: string;
-    spaceId: string;
+    spaceId?: string | null;
     x: number;
     y: number;
 };
@@ -456,7 +456,7 @@ export type spaceElementsUpdateManyWithWhereWithoutElementInput = {
 };
 export type spaceElementsCreateManySpaceInput = {
     id?: string;
-    elementId: string;
+    elementId?: string | null;
     x: number;
     y: number;
 };
@@ -464,23 +464,23 @@ export type spaceElementsUpdateWithoutSpaceInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
-    element?: Prisma.ElementUpdateOneRequiredWithoutSpaceElementsNestedInput;
+    element?: Prisma.ElementUpdateOneWithoutSpaceElementsNestedInput;
 };
 export type spaceElementsUncheckedUpdateWithoutSpaceInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 export type spaceElementsUncheckedUpdateManyWithoutSpaceInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    elementId?: Prisma.StringFieldUpdateOperationsInput | string;
+    elementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 export type spaceElementsCreateManyElementInput = {
     id?: string;
-    spaceId: string;
+    spaceId?: string | null;
     x: number;
     y: number;
 };
@@ -488,17 +488,17 @@ export type spaceElementsUpdateWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
-    space?: Prisma.SpaceUpdateOneRequiredWithoutSpaceElementsNestedInput;
+    space?: Prisma.SpaceUpdateOneWithoutSpaceElementsNestedInput;
 };
 export type spaceElementsUncheckedUpdateWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    spaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    spaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 export type spaceElementsUncheckedUpdateManyWithoutElementInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    spaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    spaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     x?: Prisma.IntFieldUpdateOperationsInput | number;
     y?: Prisma.IntFieldUpdateOperationsInput | number;
 };
@@ -508,8 +508,8 @@ export type spaceElementsSelect<ExtArgs extends runtime.Types.Extensions.Interna
     spaceId?: boolean;
     x?: boolean;
     y?: boolean;
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["spaceElements"]>;
 export type spaceElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -517,8 +517,8 @@ export type spaceElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
     spaceId?: boolean;
     x?: boolean;
     y?: boolean;
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["spaceElements"]>;
 export type spaceElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -526,8 +526,8 @@ export type spaceElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
     spaceId?: boolean;
     x?: boolean;
     y?: boolean;
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 }, ExtArgs["result"]["spaceElements"]>;
 export type spaceElementsSelectScalar = {
     id?: boolean;
@@ -538,27 +538,27 @@ export type spaceElementsSelectScalar = {
 };
 export type spaceElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "elementId" | "spaceId" | "x" | "y", ExtArgs["result"]["spaceElements"]>;
 export type spaceElementsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 };
 export type spaceElementsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 };
 export type spaceElementsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>;
-    element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>;
+    space?: boolean | Prisma.spaceElements$spaceArgs<ExtArgs>;
+    element?: boolean | Prisma.spaceElements$elementArgs<ExtArgs>;
 };
 export type $spaceElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "spaceElements";
     objects: {
-        space: Prisma.$SpacePayload<ExtArgs>;
-        element: Prisma.$ElementPayload<ExtArgs>;
+        space: Prisma.$SpacePayload<ExtArgs> | null;
+        element: Prisma.$ElementPayload<ExtArgs> | null;
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
-        elementId: string;
-        spaceId: string;
+        elementId: string | null;
+        spaceId: string | null;
         x: number;
         y: number;
     }, ExtArgs["result"]["spaceElements"]>;
@@ -890,8 +890,8 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
  */
 export interface Prisma__spaceElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
-    space<T extends Prisma.SpaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SpaceDefaultArgs<ExtArgs>>): Prisma.Prisma__SpaceClient<runtime.Types.Result.GetResult<Prisma.$SpacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
-    element<T extends Prisma.ElementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ElementDefaultArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    space<T extends Prisma.spaceElements$spaceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.spaceElements$spaceArgs<ExtArgs>>): Prisma.Prisma__SpaceClient<runtime.Types.Result.GetResult<Prisma.$SpacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    element<T extends Prisma.spaceElements$elementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.spaceElements$elementArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1299,6 +1299,42 @@ export type spaceElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
      * Limit how many spaceElements to delete.
      */
     limit?: number;
+};
+/**
+ * spaceElements.space
+ */
+export type spaceElements$spaceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Space
+     */
+    select?: Prisma.SpaceSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Space
+     */
+    omit?: Prisma.SpaceOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.SpaceInclude<ExtArgs> | null;
+    where?: Prisma.SpaceWhereInput;
+};
+/**
+ * spaceElements.element
+ */
+export type spaceElements$elementArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Element
+     */
+    select?: Prisma.ElementSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Element
+     */
+    omit?: Prisma.ElementOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ElementInclude<ExtArgs> | null;
+    where?: Prisma.ElementWhereInput;
 };
 /**
  * spaceElements without action

@@ -2,7 +2,7 @@ import { WebSocket } from "ws";
 import { RoomManager } from "./RoomManager.js";
 import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
-const JWT_PASSWORD = process.env.JWT_PASSWORD;
+const JWT_PASSWORD = (process.env.JWT_SECRET ?? process.env.JWT_PASSWORD);
 function getRandomString(length) {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";

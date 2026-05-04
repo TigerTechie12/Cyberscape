@@ -110,7 +110,8 @@ export const SpaceScalarFieldEnum = {
     width: 'width',
     thumbnail: 'thumbnail',
     height: 'height',
-    creatorId: 'creatorId'
+    creatorId: 'creatorId',
+    mapId: 'mapId'
 };
 export const SpaceElementsScalarFieldEnum = {
     id: 'id',
@@ -124,12 +125,14 @@ export const ElementScalarFieldEnum = {
     imageUrl: 'imageUrl',
     static: 'static',
     height: 'height',
-    width: 'width'
+    width: 'width',
+    creatorId: 'creatorId'
 };
 export const MapsScalarFieldEnum = {
     id: 'id',
     width: 'width',
     height: 'height',
+    thumbnail: 'thumbnail',
     name: 'name'
 };
 export const SortOrder = {

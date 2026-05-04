@@ -80,7 +80,8 @@ router.get('/metadata/bulk', async (req, res) => {
         return res.status(200).json({
             avatars: metaData.map((m) => ({
                 userId: m.id,
-                imageUrl: m.avatar?.imageUrl ?? null
+                imageUrl: m.avatar?.imageUrl ?? null,
+                name: m.avatar?.name ?? null
             }))
         });
     }

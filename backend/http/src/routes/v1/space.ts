@@ -119,6 +119,7 @@ if(!dbData){ return res.status(403).json({message:"Data not found"})}
 
 return res.status(200).json({
     "dimensions":`${dbData.height}x${dbData.width}`,
+    thumbnail: dbData.thumbnail ?? null,
 spaceElements:dbData.spaceElements.map(e=>({
 id:e.id,
 element:{

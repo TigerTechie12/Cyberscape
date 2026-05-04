@@ -835,6 +835,7 @@ export declare const SpaceScalarFieldEnum: {
     readonly thumbnail: "thumbnail";
     readonly height: "height";
     readonly creatorId: "creatorId";
+    readonly mapId: "mapId";
 };
 export type SpaceScalarFieldEnum = (typeof SpaceScalarFieldEnum)[keyof typeof SpaceScalarFieldEnum];
 export declare const SpaceElementsScalarFieldEnum: {
@@ -851,12 +852,14 @@ export declare const ElementScalarFieldEnum: {
     readonly static: "static";
     readonly height: "height";
     readonly width: "width";
+    readonly creatorId: "creatorId";
 };
 export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeof ElementScalarFieldEnum];
 export declare const MapsScalarFieldEnum: {
     readonly id: "id";
     readonly width: "width";
     readonly height: "height";
+    readonly thumbnail: "thumbnail";
     readonly name: "name";
 };
 export type MapsScalarFieldEnum = (typeof MapsScalarFieldEnum)[keyof typeof MapsScalarFieldEnum];

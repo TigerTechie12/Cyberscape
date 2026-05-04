@@ -3,8 +3,7 @@ import { mapCreator, updateImage, avatarInputs, adminMap } from "common";
 import { client } from '@repo/db/client';
 const router = Router();
 import { adminMiddleware } from "../../middleware/admin.js";
-router.use(adminMiddleware);
-router.post('/admin/element', async (req, res) => {
+router.post('/admin/element', adminMiddleware, async (req, res) => {
     const body = req.body;
     const parsedData = mapCreator.safeParse(body);
     if (!parsedData.success) {
@@ -28,7 +27,7 @@ router.post('/admin/element', async (req, res) => {
         });
     }
 });
-router.put('/admin/element/:elementId', async (req, res) => {
+router.put('/admin/element/:elementId', adminMiddleware, async (req, res) => {
     const id = req.params.elementId;
     const body = req.body;
     const parsedData = updateImage.safeParse(body);
@@ -50,7 +49,7 @@ router.put('/admin/element/:elementId', async (req, res) => {
         });
     }
 });
-router.post('/admin/avatar', async (req, res) => {
+router.post('/admin/avatar', adminMiddleware, async (req, res) => {
     const body = req.body;
     const parsedResult = avatarInputs.safeParse(body);
     if (!parsedResult.success) {
@@ -69,7 +68,7 @@ router.post('/admin/avatar', async (req, res) => {
         });
     }
 });
-router.post('/admin/map', async (req, res) => {
+router.post('/admin/map', adminMiddleware, async (req, res) => {
     const body = req.body;
     const parsedResult = adminMap.safeParse(body);
     if (!parsedResult.success) {

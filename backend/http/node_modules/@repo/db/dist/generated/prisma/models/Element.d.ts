@@ -26,6 +26,7 @@ export type ElementMinAggregateOutputType = {
     static: boolean | null;
     height: number | null;
     width: number | null;
+    creatorId: string | null;
 };
 export type ElementMaxAggregateOutputType = {
     id: string | null;
@@ -33,6 +34,7 @@ export type ElementMaxAggregateOutputType = {
     static: boolean | null;
     height: number | null;
     width: number | null;
+    creatorId: string | null;
 };
 export type ElementCountAggregateOutputType = {
     id: number;
@@ -40,6 +42,7 @@ export type ElementCountAggregateOutputType = {
     static: number;
     height: number;
     width: number;
+    creatorId: number;
     _all: number;
 };
 export type ElementAvgAggregateInputType = {
@@ -56,6 +59,7 @@ export type ElementMinAggregateInputType = {
     static?: true;
     height?: true;
     width?: true;
+    creatorId?: true;
 };
 export type ElementMaxAggregateInputType = {
     id?: true;
@@ -63,6 +67,7 @@ export type ElementMaxAggregateInputType = {
     static?: true;
     height?: true;
     width?: true;
+    creatorId?: true;
 };
 export type ElementCountAggregateInputType = {
     id?: true;
@@ -70,6 +75,7 @@ export type ElementCountAggregateInputType = {
     static?: true;
     height?: true;
     width?: true;
+    creatorId?: true;
     _all?: true;
 };
 export type ElementAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -154,6 +160,7 @@ export type ElementGroupByOutputType = {
     static: boolean;
     height: number;
     width: number;
+    creatorId: string | null;
     _count: ElementCountAggregateOutputType | null;
     _avg: ElementAvgAggregateOutputType | null;
     _sum: ElementSumAggregateOutputType | null;
@@ -172,6 +179,8 @@ export type ElementWhereInput = {
     static?: Prisma.BoolFilter<"Element"> | boolean;
     height?: Prisma.IntFilter<"Element"> | number;
     width?: Prisma.IntFilter<"Element"> | number;
+    creatorId?: Prisma.StringNullableFilter<"Element"> | string | null;
+    user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null;
     spaceElements?: Prisma.SpaceElementsListRelationFilter;
     mapElements?: Prisma.MapElementsListRelationFilter;
 };
@@ -181,6 +190,8 @@ export type ElementOrderByWithRelationInput = {
     static?: Prisma.SortOrder;
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+    creatorId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    user?: Prisma.UserOrderByWithRelationInput;
     spaceElements?: Prisma.spaceElementsOrderByRelationAggregateInput;
     mapElements?: Prisma.mapElementsOrderByRelationAggregateInput;
 };
@@ -193,6 +204,8 @@ export type ElementWhereUniqueInput = Prisma.AtLeast<{
     static?: Prisma.BoolFilter<"Element"> | boolean;
     height?: Prisma.IntFilter<"Element"> | number;
     width?: Prisma.IntFilter<"Element"> | number;
+    creatorId?: Prisma.StringNullableFilter<"Element"> | string | null;
+    user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null;
     spaceElements?: Prisma.SpaceElementsListRelationFilter;
     mapElements?: Prisma.MapElementsListRelationFilter;
 }, "id" | "id">;
@@ -202,6 +215,7 @@ export type ElementOrderByWithAggregationInput = {
     static?: Prisma.SortOrder;
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+    creatorId?: Prisma.SortOrderInput | Prisma.SortOrder;
     _count?: Prisma.ElementCountOrderByAggregateInput;
     _avg?: Prisma.ElementAvgOrderByAggregateInput;
     _max?: Prisma.ElementMaxOrderByAggregateInput;
@@ -217,6 +231,7 @@ export type ElementScalarWhereWithAggregatesInput = {
     static?: Prisma.BoolWithAggregatesFilter<"Element"> | boolean;
     height?: Prisma.IntWithAggregatesFilter<"Element"> | number;
     width?: Prisma.IntWithAggregatesFilter<"Element"> | number;
+    creatorId?: Prisma.StringNullableWithAggregatesFilter<"Element"> | string | null;
 };
 export type ElementCreateInput = {
     id?: string;
@@ -224,6 +239,7 @@ export type ElementCreateInput = {
     static: boolean;
     height: number;
     width: number;
+    user?: Prisma.UserCreateNestedOneWithoutElementInput;
     spaceElements?: Prisma.spaceElementsCreateNestedManyWithoutElementInput;
     mapElements?: Prisma.mapElementsCreateNestedManyWithoutElementInput;
 };
@@ -233,6 +249,7 @@ export type ElementUncheckedCreateInput = {
     static: boolean;
     height: number;
     width: number;
+    creatorId?: string | null;
     spaceElements?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput;
     mapElements?: Prisma.mapElementsUncheckedCreateNestedManyWithoutElementInput;
 };
@@ -242,6 +259,7 @@ export type ElementUpdateInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    user?: Prisma.UserUpdateOneWithoutElementNestedInput;
     spaceElements?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput;
     mapElements?: Prisma.mapElementsUpdateManyWithoutElementNestedInput;
 };
@@ -251,6 +269,7 @@ export type ElementUncheckedUpdateInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     spaceElements?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput;
     mapElements?: Prisma.mapElementsUncheckedUpdateManyWithoutElementNestedInput;
 };
@@ -260,6 +279,7 @@ export type ElementCreateManyInput = {
     static: boolean;
     height: number;
     width: number;
+    creatorId?: string | null;
 };
 export type ElementUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -274,10 +294,19 @@ export type ElementUncheckedUpdateManyInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
-export type ElementScalarRelationFilter = {
-    is?: Prisma.ElementWhereInput;
-    isNot?: Prisma.ElementWhereInput;
+export type ElementListRelationFilter = {
+    every?: Prisma.ElementWhereInput;
+    some?: Prisma.ElementWhereInput;
+    none?: Prisma.ElementWhereInput;
+};
+export type ElementOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type ElementNullableScalarRelationFilter = {
+    is?: Prisma.ElementWhereInput | null;
+    isNot?: Prisma.ElementWhereInput | null;
 };
 export type ElementCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
@@ -285,6 +314,7 @@ export type ElementCountOrderByAggregateInput = {
     static?: Prisma.SortOrder;
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+    creatorId?: Prisma.SortOrder;
 };
 export type ElementAvgOrderByAggregateInput = {
     height?: Prisma.SortOrder;
@@ -296,6 +326,7 @@ export type ElementMaxOrderByAggregateInput = {
     static?: Prisma.SortOrder;
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+    creatorId?: Prisma.SortOrder;
 };
 export type ElementMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
@@ -303,20 +334,61 @@ export type ElementMinOrderByAggregateInput = {
     static?: Prisma.SortOrder;
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+    creatorId?: Prisma.SortOrder;
 };
 export type ElementSumOrderByAggregateInput = {
     height?: Prisma.SortOrder;
     width?: Prisma.SortOrder;
+};
+export type ElementCreateNestedManyWithoutUserInput = {
+    create?: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput> | Prisma.ElementCreateWithoutUserInput[] | Prisma.ElementUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ElementCreateOrConnectWithoutUserInput | Prisma.ElementCreateOrConnectWithoutUserInput[];
+    createMany?: Prisma.ElementCreateManyUserInputEnvelope;
+    connect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+};
+export type ElementUncheckedCreateNestedManyWithoutUserInput = {
+    create?: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput> | Prisma.ElementCreateWithoutUserInput[] | Prisma.ElementUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ElementCreateOrConnectWithoutUserInput | Prisma.ElementCreateOrConnectWithoutUserInput[];
+    createMany?: Prisma.ElementCreateManyUserInputEnvelope;
+    connect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+};
+export type ElementUpdateManyWithoutUserNestedInput = {
+    create?: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput> | Prisma.ElementCreateWithoutUserInput[] | Prisma.ElementUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ElementCreateOrConnectWithoutUserInput | Prisma.ElementCreateOrConnectWithoutUserInput[];
+    upsert?: Prisma.ElementUpsertWithWhereUniqueWithoutUserInput | Prisma.ElementUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: Prisma.ElementCreateManyUserInputEnvelope;
+    set?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    disconnect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    delete?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    connect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    update?: Prisma.ElementUpdateWithWhereUniqueWithoutUserInput | Prisma.ElementUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?: Prisma.ElementUpdateManyWithWhereWithoutUserInput | Prisma.ElementUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: Prisma.ElementScalarWhereInput | Prisma.ElementScalarWhereInput[];
+};
+export type ElementUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput> | Prisma.ElementCreateWithoutUserInput[] | Prisma.ElementUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ElementCreateOrConnectWithoutUserInput | Prisma.ElementCreateOrConnectWithoutUserInput[];
+    upsert?: Prisma.ElementUpsertWithWhereUniqueWithoutUserInput | Prisma.ElementUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: Prisma.ElementCreateManyUserInputEnvelope;
+    set?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    disconnect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    delete?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    connect?: Prisma.ElementWhereUniqueInput | Prisma.ElementWhereUniqueInput[];
+    update?: Prisma.ElementUpdateWithWhereUniqueWithoutUserInput | Prisma.ElementUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?: Prisma.ElementUpdateManyWithWhereWithoutUserInput | Prisma.ElementUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: Prisma.ElementScalarWhereInput | Prisma.ElementScalarWhereInput[];
 };
 export type ElementCreateNestedOneWithoutMapElementsInput = {
     create?: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>;
     connectOrCreate?: Prisma.ElementCreateOrConnectWithoutMapElementsInput;
     connect?: Prisma.ElementWhereUniqueInput;
 };
-export type ElementUpdateOneRequiredWithoutMapElementsNestedInput = {
+export type ElementUpdateOneWithoutMapElementsNestedInput = {
     create?: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>;
     connectOrCreate?: Prisma.ElementCreateOrConnectWithoutMapElementsInput;
     upsert?: Prisma.ElementUpsertWithoutMapElementsInput;
+    disconnect?: Prisma.ElementWhereInput | boolean;
+    delete?: Prisma.ElementWhereInput | boolean;
     connect?: Prisma.ElementWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.ElementUpdateToOneWithWhereWithoutMapElementsInput, Prisma.ElementUpdateWithoutMapElementsInput>, Prisma.ElementUncheckedUpdateWithoutMapElementsInput>;
 };
@@ -325,15 +397,67 @@ export type ElementCreateNestedOneWithoutSpaceElementsInput = {
     connectOrCreate?: Prisma.ElementCreateOrConnectWithoutSpaceElementsInput;
     connect?: Prisma.ElementWhereUniqueInput;
 };
-export type ElementUpdateOneRequiredWithoutSpaceElementsNestedInput = {
+export type ElementUpdateOneWithoutSpaceElementsNestedInput = {
     create?: Prisma.XOR<Prisma.ElementCreateWithoutSpaceElementsInput, Prisma.ElementUncheckedCreateWithoutSpaceElementsInput>;
     connectOrCreate?: Prisma.ElementCreateOrConnectWithoutSpaceElementsInput;
     upsert?: Prisma.ElementUpsertWithoutSpaceElementsInput;
+    disconnect?: Prisma.ElementWhereInput | boolean;
+    delete?: Prisma.ElementWhereInput | boolean;
     connect?: Prisma.ElementWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.ElementUpdateToOneWithWhereWithoutSpaceElementsInput, Prisma.ElementUpdateWithoutSpaceElementsInput>, Prisma.ElementUncheckedUpdateWithoutSpaceElementsInput>;
 };
 export type BoolFieldUpdateOperationsInput = {
     set?: boolean;
+};
+export type ElementCreateWithoutUserInput = {
+    id?: string;
+    imageUrl: string;
+    static: boolean;
+    height: number;
+    width: number;
+    spaceElements?: Prisma.spaceElementsCreateNestedManyWithoutElementInput;
+    mapElements?: Prisma.mapElementsCreateNestedManyWithoutElementInput;
+};
+export type ElementUncheckedCreateWithoutUserInput = {
+    id?: string;
+    imageUrl: string;
+    static: boolean;
+    height: number;
+    width: number;
+    spaceElements?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput;
+    mapElements?: Prisma.mapElementsUncheckedCreateNestedManyWithoutElementInput;
+};
+export type ElementCreateOrConnectWithoutUserInput = {
+    where: Prisma.ElementWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput>;
+};
+export type ElementCreateManyUserInputEnvelope = {
+    data: Prisma.ElementCreateManyUserInput | Prisma.ElementCreateManyUserInput[];
+    skipDuplicates?: boolean;
+};
+export type ElementUpsertWithWhereUniqueWithoutUserInput = {
+    where: Prisma.ElementWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ElementUpdateWithoutUserInput, Prisma.ElementUncheckedUpdateWithoutUserInput>;
+    create: Prisma.XOR<Prisma.ElementCreateWithoutUserInput, Prisma.ElementUncheckedCreateWithoutUserInput>;
+};
+export type ElementUpdateWithWhereUniqueWithoutUserInput = {
+    where: Prisma.ElementWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ElementUpdateWithoutUserInput, Prisma.ElementUncheckedUpdateWithoutUserInput>;
+};
+export type ElementUpdateManyWithWhereWithoutUserInput = {
+    where: Prisma.ElementScalarWhereInput;
+    data: Prisma.XOR<Prisma.ElementUpdateManyMutationInput, Prisma.ElementUncheckedUpdateManyWithoutUserInput>;
+};
+export type ElementScalarWhereInput = {
+    AND?: Prisma.ElementScalarWhereInput | Prisma.ElementScalarWhereInput[];
+    OR?: Prisma.ElementScalarWhereInput[];
+    NOT?: Prisma.ElementScalarWhereInput | Prisma.ElementScalarWhereInput[];
+    id?: Prisma.StringFilter<"Element"> | string;
+    imageUrl?: Prisma.StringFilter<"Element"> | string;
+    static?: Prisma.BoolFilter<"Element"> | boolean;
+    height?: Prisma.IntFilter<"Element"> | number;
+    width?: Prisma.IntFilter<"Element"> | number;
+    creatorId?: Prisma.StringNullableFilter<"Element"> | string | null;
 };
 export type ElementCreateWithoutMapElementsInput = {
     id?: string;
@@ -341,6 +465,7 @@ export type ElementCreateWithoutMapElementsInput = {
     static: boolean;
     height: number;
     width: number;
+    user?: Prisma.UserCreateNestedOneWithoutElementInput;
     spaceElements?: Prisma.spaceElementsCreateNestedManyWithoutElementInput;
 };
 export type ElementUncheckedCreateWithoutMapElementsInput = {
@@ -349,6 +474,7 @@ export type ElementUncheckedCreateWithoutMapElementsInput = {
     static: boolean;
     height: number;
     width: number;
+    creatorId?: string | null;
     spaceElements?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput;
 };
 export type ElementCreateOrConnectWithoutMapElementsInput = {
@@ -370,6 +496,7 @@ export type ElementUpdateWithoutMapElementsInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    user?: Prisma.UserUpdateOneWithoutElementNestedInput;
     spaceElements?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput;
 };
 export type ElementUncheckedUpdateWithoutMapElementsInput = {
@@ -378,6 +505,7 @@ export type ElementUncheckedUpdateWithoutMapElementsInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     spaceElements?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput;
 };
 export type ElementCreateWithoutSpaceElementsInput = {
@@ -386,6 +514,7 @@ export type ElementCreateWithoutSpaceElementsInput = {
     static: boolean;
     height: number;
     width: number;
+    user?: Prisma.UserCreateNestedOneWithoutElementInput;
     mapElements?: Prisma.mapElementsCreateNestedManyWithoutElementInput;
 };
 export type ElementUncheckedCreateWithoutSpaceElementsInput = {
@@ -394,6 +523,7 @@ export type ElementUncheckedCreateWithoutSpaceElementsInput = {
     static: boolean;
     height: number;
     width: number;
+    creatorId?: string | null;
     mapElements?: Prisma.mapElementsUncheckedCreateNestedManyWithoutElementInput;
 };
 export type ElementCreateOrConnectWithoutSpaceElementsInput = {
@@ -415,6 +545,7 @@ export type ElementUpdateWithoutSpaceElementsInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    user?: Prisma.UserUpdateOneWithoutElementNestedInput;
     mapElements?: Prisma.mapElementsUpdateManyWithoutElementNestedInput;
 };
 export type ElementUncheckedUpdateWithoutSpaceElementsInput = {
@@ -423,7 +554,40 @@ export type ElementUncheckedUpdateWithoutSpaceElementsInput = {
     static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     height?: Prisma.IntFieldUpdateOperationsInput | number;
     width?: Prisma.IntFieldUpdateOperationsInput | number;
+    creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     mapElements?: Prisma.mapElementsUncheckedUpdateManyWithoutElementNestedInput;
+};
+export type ElementCreateManyUserInput = {
+    id?: string;
+    imageUrl: string;
+    static: boolean;
+    height: number;
+    width: number;
+};
+export type ElementUpdateWithoutUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+    static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    height?: Prisma.IntFieldUpdateOperationsInput | number;
+    width?: Prisma.IntFieldUpdateOperationsInput | number;
+    spaceElements?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput;
+    mapElements?: Prisma.mapElementsUpdateManyWithoutElementNestedInput;
+};
+export type ElementUncheckedUpdateWithoutUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+    static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    height?: Prisma.IntFieldUpdateOperationsInput | number;
+    width?: Prisma.IntFieldUpdateOperationsInput | number;
+    spaceElements?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput;
+    mapElements?: Prisma.mapElementsUncheckedUpdateManyWithoutElementNestedInput;
+};
+export type ElementUncheckedUpdateManyWithoutUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.StringFieldUpdateOperationsInput | string;
+    static?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    height?: Prisma.IntFieldUpdateOperationsInput | number;
+    width?: Prisma.IntFieldUpdateOperationsInput | number;
 };
 /**
  * Count Type ElementCountOutputType
@@ -463,6 +627,8 @@ export type ElementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     static?: boolean;
     height?: boolean;
     width?: boolean;
+    creatorId?: boolean;
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
     spaceElements?: boolean | Prisma.Element$spaceElementsArgs<ExtArgs>;
     mapElements?: boolean | Prisma.Element$mapElementsArgs<ExtArgs>;
     _count?: boolean | Prisma.ElementCountOutputTypeDefaultArgs<ExtArgs>;
@@ -473,6 +639,8 @@ export type ElementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
     static?: boolean;
     height?: boolean;
     width?: boolean;
+    creatorId?: boolean;
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
 }, ExtArgs["result"]["element"]>;
 export type ElementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -480,6 +648,8 @@ export type ElementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
     static?: boolean;
     height?: boolean;
     width?: boolean;
+    creatorId?: boolean;
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
 }, ExtArgs["result"]["element"]>;
 export type ElementSelectScalar = {
     id?: boolean;
@@ -487,18 +657,25 @@ export type ElementSelectScalar = {
     static?: boolean;
     height?: boolean;
     width?: boolean;
+    creatorId?: boolean;
 };
-export type ElementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "static" | "height" | "width", ExtArgs["result"]["element"]>;
+export type ElementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "static" | "height" | "width" | "creatorId", ExtArgs["result"]["element"]>;
 export type ElementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
     spaceElements?: boolean | Prisma.Element$spaceElementsArgs<ExtArgs>;
     mapElements?: boolean | Prisma.Element$mapElementsArgs<ExtArgs>;
     _count?: boolean | Prisma.ElementCountOutputTypeDefaultArgs<ExtArgs>;
 };
-export type ElementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
-export type ElementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type ElementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
+};
+export type ElementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    user?: boolean | Prisma.Element$userArgs<ExtArgs>;
+};
 export type $ElementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "Element";
     objects: {
+        user: Prisma.$UserPayload<ExtArgs> | null;
         spaceElements: Prisma.$spaceElementsPayload<ExtArgs>[];
         mapElements: Prisma.$mapElementsPayload<ExtArgs>[];
     };
@@ -508,6 +685,7 @@ export type $ElementPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
         static: boolean;
         height: number;
         width: number;
+        creatorId: string | null;
     }, ExtArgs["result"]["element"]>;
     composites: {};
 };
@@ -837,6 +1015,7 @@ export interface ElementDelegate<ExtArgs extends runtime.Types.Extensions.Intern
  */
 export interface Prisma__ElementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
+    user<T extends Prisma.Element$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     spaceElements<T extends Prisma.Element$spaceElementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$spaceElementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     mapElements<T extends Prisma.Element$mapElementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$mapElementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
@@ -869,6 +1048,7 @@ export interface ElementFieldRefs {
     readonly static: Prisma.FieldRef<"Element", 'Boolean'>;
     readonly height: Prisma.FieldRef<"Element", 'Int'>;
     readonly width: Prisma.FieldRef<"Element", 'Int'>;
+    readonly creatorId: Prisma.FieldRef<"Element", 'String'>;
 }
 /**
  * Element findUnique
@@ -1108,6 +1288,10 @@ export type ElementCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
      */
     data: Prisma.ElementCreateManyInput | Prisma.ElementCreateManyInput[];
     skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ElementIncludeCreateManyAndReturn<ExtArgs> | null;
 };
 /**
  * Element update
@@ -1175,6 +1359,10 @@ export type ElementUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
      * Limit how many Elements to update.
      */
     limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ElementIncludeUpdateManyAndReturn<ExtArgs> | null;
 };
 /**
  * Element upsert
@@ -1238,6 +1426,24 @@ export type ElementDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
      * Limit how many Elements to delete.
      */
     limit?: number;
+};
+/**
+ * Element.user
+ */
+export type Element$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: Prisma.UserSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: Prisma.UserOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.UserInclude<ExtArgs> | null;
+    where?: Prisma.UserWhereInput;
 };
 /**
  * Element.spaceElements

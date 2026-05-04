@@ -5,12 +5,13 @@ import { spaceElements } from "common";
 const router = Router();
 import { userMiddleware } from "../../middleware/user.js";
 import jwt, {} from "jsonwebtoken";
-router.use(userMiddleware);
-router.post('/space', async (req, res) => {
+router.post('/space', userMiddleware, async (req, res) => {
     const body = req.body;
+    console.log(">>> POST /space body:", JSON.stringify(body));
     const parsedSpaceData = spaceData.safeParse(body);
+    console.log(">>> Parse result:", parsedSpaceData.success, parsedSpaceData.error?.issues);
     if (!parsedSpaceData.success) {
-        return res.status(400).json({ message: "Invalid Inputs" });
+        return res.status(400).json({ message: "Invalid Inputs", errors: parsedSpaceData.error?.issues });
     }
     try {
         if (!parsedSpaceData.data.mapId) {
@@ -62,7 +63,7 @@ router.post('/space', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.delete('/space/:spaceId', async (req, res) => {
+router.delete('/space/:spaceId', userMiddleware, async (req, res) => {
     const id = req.params.spaceId;
     try {
         const existence = await client.space.findUnique({ where: { id: id }, select: { creatorId: true } });
@@ -81,7 +82,7 @@ router.delete('/space/:spaceId', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/space/all', async (req, res) => {
+router.get('/space/all', userMiddleware, async (req, res) => {
     try {
         const JWT_SECRET = process.env.JWT_SECRET;
         const authHeader = req.headers.authorization;
@@ -104,7 +105,7 @@ router.get('/space/all', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/space/:spaceId', async (req, res) => {
+router.get('/space/:spaceId', userMiddleware, async (req, res) => {
     const id = req.params.spaceId;
     try {
         const dbData = await client.space.findUnique({ where: { id: id },
@@ -120,6 +121,7 @@ router.get('/space/:spaceId', async (req, res) => {
         }
         return res.status(200).json({
             "dimensions": `${dbData.height}x${dbData.width}`,
+            thumbnail: dbData.thumbnail ?? null,
             spaceElements: dbData.spaceElements.map(e => ({
                 id: e.id,
                 element: {
@@ -138,7 +140,7 @@ router.get('/space/:spaceId', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.post('/space/element', async (req, res) => {
+router.post('/space/element', userMiddleware, async (req, res) => {
     const body = req.body;
     const parsedResult = spaceElements.safeParse(body);
     if (!parsedResult.success) {
@@ -174,7 +176,7 @@ router.post('/space/element', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.delete('/space/element/:id', async (req, res) => {
+router.delete('/space/element/:id', userMiddleware, async (req, res) => {
     const id = req.params.id;
     try {
         const deleteData = await client.spaceElements.delete({ where: { id: id } });
@@ -184,7 +186,7 @@ router.delete('/space/element/:id', async (req, res) => {
         return res.status(403).json({ message: "Something went wrong" });
     }
 });
-router.get('/user/elements', async (req, res) => {
+router.get('/user/elements', userMiddleware, async (req, res) => {
     try {
         const JWT_SECRET = process.env.JWT_SECRET;
         const authHeader = req.headers.authorization;
